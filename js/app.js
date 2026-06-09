@@ -121,6 +121,75 @@ function trackEvent(name, payload = {}) {
   }
 }
 
+function getShareLink() {
+  const url = new URL(location.href);
+  url.search = '?reset=1';
+  url.hash = '';
+  return url.toString();
+}
+
+function buildShareText() {
+  const r = state.result;
+  const quote = r?.shareQuote ?? '';
+  const name = r?.scriptA?.name ?? '五年后的自己';
+  return `${quote}\n\n— ${name}\n\n来测测你的五年后 → ${getShareLink()}`;
+}
+
+function hideShareCopySheet() {
+  document.getElementById('share-copy-sheet')?.remove();
+}
+
+function showShareCopySheet(text) {
+  hideShareCopySheet();
+  const overlay = document.createElement('div');
+  overlay.id = 'share-copy-sheet';
+  overlay.className = 'share-copy-sheet verdict-pixel';
+  overlay.innerHTML = `
+    <div class="share-copy-mask"></div>
+    <div class="share-copy-panel">
+      <p class="share-copy-title">分享文案</p>
+      <pre class="share-copy-body">${escapeHtml(text)}</pre>
+      <p class="share-copy-hint">文案已复制，粘贴发给朋友吧</p>
+      <button type="button" class="btn btn-primary btn-block" id="btn-share-copy-close">知道了</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.querySelector('#btn-share-copy-close')?.addEventListener('click', hideShareCopySheet);
+  overlay.querySelector('.share-copy-mask')?.addEventListener('click', hideShareCopySheet);
+}
+
+async function shareToFriend() {
+  if (!state.result) return;
+
+  state.shared = true;
+  saveSession();
+  trackEvent('future_leak_share', { action: 'btn-share' });
+
+  const text = buildShareText();
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: '五年后的自己模拟器',
+        text,
+      });
+      return;
+    } catch (err) {
+      if (err?.name === 'AbortError') return;
+    }
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    showToast('复制失败，请手动复制');
+    showShareCopySheet(text);
+    return;
+  }
+
+  showShareCopySheet(text);
+}
+
 function getFirstUnansweredIndex() {
   for (let i = 0; i < TOTAL_QUESTIONS; i++) {
     if (!state.answers[QUESTIONS[i].id]) {
@@ -375,7 +444,7 @@ function renderResultIdentity() {
         <div class="dna-bars">${renderDnaBars(dna)}</div>
         <p class="verdict-system">Future DNA Analysis Complete</p>
       </div>
-      <button class="btn btn-primary btn-block" id="btn-next" type="button">接收判词 →</button>
+      <button class="btn btn-primary btn-block" id="btn-next" type="button">开启2031</button>
     </div>
   `;
 }
@@ -383,25 +452,26 @@ function renderResultIdentity() {
 function renderResultShare() {
   const r = state.result;
   const s = r.scriptA;
-  const tags = r.lifeTags ?? s.verdict?.lifeTags ?? [];
+  const tags = (r.lifeTags ?? s.verdict?.lifeTags ?? []).slice(0, 3);
   return `
     <div class="screen screen-verdict screen-share verdict-pixel" data-screen="result-share">
       ${renderResultNav('result-share')}
-      <p class="share-header verdict-pixel">来自2031的自己 Future me</p>
-      <div class="verdict-body verdict-body-share" id="poster-canvas">
-        <h1 class="share-identity verdict-pixel">${escapeHtml(s.name)}</h1>
-        <p class="share-quote verdict-pixel">${formatCommaBreak(r.shareQuote)}</p>
-        <div class="share-tags">
-          ${tags.map((t) => `<span class="share-tag verdict-pixel">${escapeHtml(t)}</span>`).join('')}
+      <div id="share-capture-root" class="share-capture-root">
+        <p class="share-header verdict-pixel">来自2031年的自己</p>
+        <div class="verdict-body verdict-body-share">
+          <p class="share-quote verdict-pixel">${formatCommaBreak(r.shareQuote)}</p>
+          <div class="share-tags">
+            ${tags.map((t) => `<span class="share-tag verdict-pixel">${escapeHtml(t)}</span>`).join('')}
+          </div>
         </div>
       </div>
       <div class="share-actions">
         <button class="btn btn-primary btn-block" id="btn-share" type="button">分享给朋友</button>
         <div class="actions-row">
-          <button class="btn btn-ghost btn-sm" id="btn-copy" type="button">复制判词</button>
-          <button class="btn btn-ghost btn-sm" id="btn-save" type="button">保存图片</button>
+          <button class="btn btn-ghost btn-sm verdict-pixel" id="btn-copy" type="button">复制判词</button>
+          <button class="btn btn-ghost btn-sm verdict-pixel" id="btn-save" type="button">保存图片</button>
         </div>
-        <button class="btn btn-ghost btn-block" id="btn-restart" type="button">重新推演</button>
+        <button class="btn btn-ghost btn-block verdict-pixel" id="btn-restart" type="button">重新推演</button>
       </div>
     </div>
   `;
@@ -531,7 +601,7 @@ function showToast(msg) {
 
 async function copyQuote() {
   const s = state.result.scriptA;
-  const tags = (state.result.lifeTags ?? []).join(' · ');
+  const tags = (state.result.lifeTags ?? s.verdict?.lifeTags ?? []).slice(0, 3).join(' · ');
   const text = `${state.result.shareQuote}\n\n${s.name}${tags ? `\n${tags}` : ''}\n\n来自2031年的自己`;
   try {
     await navigator.clipboard.writeText(text);
@@ -541,84 +611,103 @@ async function copyQuote() {
   }
 }
 
-function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-  const chars = [...text];
-  let line = '';
-  let offsetY = y;
-  for (const ch of chars) {
-    const test = line + ch;
-    if (ctx.measureText(test).width > maxWidth && line) {
-      ctx.fillText(line, x, offsetY);
-      line = ch;
-      offsetY += lineHeight;
-    } else {
-      line = test;
-    }
+let html2canvasLoader = null;
+
+function loadHtml2Canvas() {
+  if (!html2canvasLoader) {
+    html2canvasLoader = import('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/+esm').then(
+      (mod) => mod.default
+    );
   }
-  if (line) ctx.fillText(line, x, offsetY);
+  return html2canvasLoader;
 }
 
-const PIXEL_FONT_FAMILY = 'Zpix, "Press Start 2P", monospace';
+async function saveImageBlob(blob) {
+  const file = new File([blob], 'future-me-2031.png', { type: 'image/png' });
 
-async function savePoster() {
-  const r = state.result;
-  const s = r.scriptA;
-  const tags = r.lifeTags ?? [];
-  const canvas = document.createElement('canvas');
-  canvas.width = 1080;
-  canvas.height = 1920;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-
-  try {
-    await Promise.all([
-      document.fonts.load('22px Zpix'),
-      document.fonts.load('32px Zpix'),
-      document.fonts.load('56px Zpix'),
-    ]);
-  } catch {
-    /* 字体未加载时回退到 monospace */
+  if (navigator.canShare?.({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: '五年后的自己' });
+      showToast('已唤起分享，可选择保存到相册');
+      return;
+    } catch (err) {
+      if (err?.name === 'AbortError') return;
+    }
   }
 
-  const grad = ctx.createLinearGradient(0, 0, 1080, 500);
-  grad.addColorStop(0, 'rgba(138,93,255,0.22)');
-  grad.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = '#06060c';
-  ctx.fillRect(0, 0, 1080, 1920);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 1080, 700);
-
-  ctx.textAlign = 'center';
-
-  ctx.fillStyle = 'rgba(238,242,255,0.55)';
-  ctx.font = `22px ${PIXEL_FONT_FAMILY}`;
-  ctx.fillText('来自2031的自己 Future me', 540, 120);
-
-  ctx.fillStyle = '#eef2ff';
-  ctx.font = `56px ${PIXEL_FONT_FAMILY}`;
-  ctx.fillText(s.name, 540, 280);
-
-  ctx.fillStyle = '#eef2ff';
-  ctx.font = `32px ${PIXEL_FONT_FAMILY}`;
-  wrapText(ctx, r.shareQuote, 540, 480, 920, 52);
-
-  ctx.fillStyle = 'rgba(238,242,255,0.45)';
-  ctx.font = `22px ${PIXEL_FONT_FAMILY}`;
-  let tagY = 900;
-  tags.forEach((tag) => {
-    ctx.fillText(tag, 540, tagY);
-    tagY += 48;
-  });
-
-  ctx.fillStyle = 'rgba(238,242,255,0.3)';
-  ctx.font = `18px ${PIXEL_FONT_FAMILY}`;
-  ctx.fillText('Future Me 2031', 540, 1180);
-
+  const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.download = 'future-me-2031.png';
-  link.href = canvas.toDataURL('image/png');
+  link.href = url;
   link.click();
-  showToast('图片已保存');
+  URL.revokeObjectURL(url);
+  showToast('截图已保存，可在相册或下载中查看');
+}
+
+function composePosterCanvas(sourceCanvas) {
+  const poster = document.createElement('canvas');
+  poster.width = 1080;
+  poster.height = 1920;
+  const ctx = poster.getContext('2d');
+  if (!ctx) return sourceCanvas;
+
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, 1080, 1920);
+
+  const padding = 96;
+  const maxW = 1080 - padding * 2;
+  const maxH = 1920 - padding * 2;
+  const scale = Math.min(maxW / sourceCanvas.width, maxH / sourceCanvas.height);
+  const drawW = sourceCanvas.width * scale;
+  const drawH = sourceCanvas.height * scale;
+  const x = (1080 - drawW) / 2;
+  const y = (1920 - drawH) / 2;
+
+  ctx.drawImage(sourceCanvas, x, y, drawW, drawH);
+  return poster;
+}
+
+async function captureShareScreen() {
+  const root = document.getElementById('share-capture-root');
+  if (!root) {
+    showToast('请在金句页使用截图保存');
+    return;
+  }
+
+  const actions = document.querySelector('.screen-share .share-actions');
+
+  showToast('正在生成分享海报…');
+  if (actions) {
+    actions.dataset.capturePrevVisibility = actions.style.visibility;
+    actions.style.visibility = 'hidden';
+  }
+
+  try {
+    const html2canvas = await loadHtml2Canvas();
+    const canvas = await html2canvas(root, {
+      backgroundColor: '#000000',
+      scale: Math.min(window.devicePixelRatio || 2, 3),
+      useCORS: true,
+      logging: false,
+      allowTaint: true,
+    });
+
+    const poster = composePosterCanvas(canvas);
+    const blob = await new Promise((resolve) => poster.toBlob(resolve, 'image/png', 1));
+    if (!blob) {
+      showToast('海报生成失败，请重试');
+      return;
+    }
+    await saveImageBlob(blob);
+  } catch (err) {
+    console.error(err);
+    showToast('海报生成失败，请重试');
+  } finally {
+    if (actions) {
+      actions.style.visibility = actions.dataset.capturePrevVisibility || '';
+      delete actions.dataset.capturePrevVisibility;
+    }
+  }
 }
 
 function stopIntroAnimation() {
@@ -790,19 +879,10 @@ function bindEvents() {
   });
 
   document.getElementById('btn-copy')?.addEventListener('click', copyQuote);
-  document.getElementById('btn-save')?.addEventListener('click', savePoster);
+  document.getElementById('btn-save')?.addEventListener('click', captureShareScreen);
 
   document.getElementById('btn-share')?.addEventListener('click', () => {
-    state.shared = true;
-    saveSession();
-    const r = state.result;
-    const text = `${r.shareQuote}\n\n— ${r.scriptA.name}\n\n来测测你的五年后 → ${location.href}`;
-    if (navigator.share) {
-      navigator.share({ title: '五年后的自己模拟器', text }).catch(() => {});
-    } else {
-      navigator.clipboard.writeText(text).catch(() => {});
-      showToast('判词已复制，发给朋友吧');
-    }
+    shareToFriend();
   });
 
   document.getElementById('btn-restart')?.addEventListener('click', () => {
