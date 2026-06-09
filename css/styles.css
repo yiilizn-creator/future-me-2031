@@ -5,7 +5,7 @@
 }
 
 :root {
-  --font-pixel: 'Zpix', 'Press Start 2P', monospace;
+  --font-pixel: 'Zpix', monospace;
   --bg: #08080b;
   --bg-secondary: #111114;
   --bg-deep: #08080b;
@@ -40,25 +40,32 @@ html {
   text-size-adjust: 100%;
 }
 
-html,
-body,
-body *,
 #app,
-#app *,
-.share-copy-sheet,
-.share-copy-sheet *,
-.wechat-share-guide,
-.wechat-share-guide * {
-  font-family: var(--font-pixel);
+#app *:not(svg):not(path):not(rect):not(circle) {
+  font-family: var(--font-pixel) !important;
   -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: grayscale;
   font-smooth: never;
   font-weight: normal;
-  text-rendering: optimizeSpeed;
+}
+
+.share-copy-sheet,
+.share-copy-sheet *,
+.wechat-share-guide,
+.wechat-share-guide * {
+  font-family: var(--font-pixel) !important;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  font-weight: normal;
 }
 
 html,
 body {
+  font-family: var(--font-pixel);
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  font-weight: normal;
+  text-rendering: optimizeSpeed;
   background: var(--bg-deep);
   color: var(--text);
   overflow-x: hidden;
@@ -69,7 +76,7 @@ button,
 input,
 textarea,
 select {
-  font-family: var(--font-pixel);
+  font-family: var(--font-pixel) !important;
   -webkit-font-smoothing: none;
   font-smooth: never;
 }
@@ -544,12 +551,13 @@ body {
 }
 
 .question-title {
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.55;
   white-space: pre-line;
   margin-bottom: 16px;
   text-align: center;
   min-height: calc(1.55em * 2);
+  color: var(--text);
 }
 
 .answers {
@@ -756,6 +764,10 @@ body {
   letter-spacing: 0.06em;
   text-align: center;
   margin: 0 0 12px;
+}
+
+.screen-share .brand-eyebrow {
+  color: var(--text);
 }
 
 .section-label {
@@ -1014,7 +1026,14 @@ body {
   gap: 8px;
 }
 
-/* Future Leak 彩蛋 */
+/* Future Leak 彩蛋 · AI 提示 */
+.screen-leak,
+.screen-leak * {
+  font-family: var(--font-pixel) !important;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
 .screen-leak {
   background: transparent;
   justify-content: center;
@@ -1029,6 +1048,7 @@ body {
   color: rgba(255, 255, 255, 0.85);
   margin-bottom: 20px;
   letter-spacing: 0.04em;
+  font-family: var(--font-pixel) !important;
 }
 
 .leak-scan-bar {
@@ -1074,6 +1094,7 @@ body {
   font-size: clamp(14px, 4.2vw, 22px);
   line-height: 1.65;
   color: #fff;
+  font-family: var(--font-pixel) !important;
   opacity: 0;
   visibility: hidden;
   height: 0;
@@ -1090,8 +1111,9 @@ body {
 
 .leak-confidence {
   font-size: 11px;
-  color: #8b5cf6;
+  color: var(--highlight);
   margin-top: 8px;
+  font-family: var(--font-pixel) !important;
   opacity: 0;
   transition: opacity 0.35s steps(3);
 }
@@ -1790,7 +1812,7 @@ body {
   }
 
   .question-title {
-    font-size: 14px;
+    font-size: 17px;
     min-height: calc(1.65em * 2);
   }
 
@@ -1814,7 +1836,7 @@ body {
   }
 
   .question-title {
-    font-size: 13px;
+    font-size: 16px;
     margin-bottom: 8px;
     min-height: calc(1.65em * 2);
   }
