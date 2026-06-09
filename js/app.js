@@ -24,6 +24,17 @@ const DNA_BAR_ORDER = [
 ];
 const DNA_BLOCKS = 10;
 
+const BRAND = {
+  name: '人生剧透计划 - Future Me 2031',
+  shortName: '人生剧透计划',
+  hero: ['你的人生', '其实有剧透'],
+  sub: '而且你已经演到一半了',
+  description: ['2分钟完成', '看看2031年的你会变成什么样'],
+  ctaStart: '开启剧透',
+  observer: '来自2031年的观察者',
+  archiveLabel: 'Future Archive',
+};
+
 const app = document.getElementById('app');
 let introTimer = null;
 let leakFlowTimer = null;
@@ -83,7 +94,6 @@ async function bootstrap() {
   state.sessionId = createSessionId();
   loadSession();
   render();
-  if (state.screen === 'intro') runIntroAnimation();
 }
 
 function getQuizProgress() {
@@ -220,12 +230,21 @@ function renderSharePoetryHtml(result) {
 }
 
 function buildShareText() {
-  const r = state.result;
-  const name = r?.scriptA?.name ?? '五年后的自己';
-  const portrait = toPoetryLines(getResultPortrait(r)).join('\n');
-  const reminder = toPoetryLines(getResultReminder(r)).join('\n');
-  const body = [portrait, reminder ? `\n未来提醒\n${reminder}` : ''].filter(Boolean).join('\n');
-  return `${body}\n\n— ${name}\n\n来测测你的五年后 → ${getShareLink()}`;
+  return [
+    '未来其实没有那么神秘。',
+    '',
+    '很多答案。',
+    '',
+    '早就藏在今天的选择里。',
+    '',
+    '刚玩了一个叫人生剧透计划的网站。',
+    '',
+    '它给我生成了一份2031人生剧透。',
+    '',
+    '意外地准。',
+    '',
+    getShareLink(),
+  ].join('\n');
 }
 
 function buildCopyFutureText() {
@@ -237,7 +256,7 @@ function buildCopyFutureText() {
     portrait,
     reminder ? `未来提醒\n${reminder}` : '',
     tags,
-    '来自2031年的一封信',
+    BRAND.observer,
     getShareSpreadFooter(),
   ]
     .filter(Boolean)
@@ -246,13 +265,9 @@ function buildCopyFutureText() {
 
 function buildSharePayload() {
   const text = buildShareText();
-  const r = state.result;
-  const name = r?.scriptA?.name ?? '五年后的自己';
-  const portrait = toPoetryLines(getResultPortrait(r)).join(' ');
-  const desc = portrait.length > 80 ? `${portrait.slice(0, 80)}…` : portrait || '来测测你的 2031';
   return {
-    title: `来自2031年的一封信 · ${name}`,
-    desc,
+    title: '人生剧透计划 - Future Me 2031',
+    desc: '未来其实没有那么神秘。很多答案，早就藏在今天的选择里。',
     link: getShareLink(),
     imgUrl: getShareImageUrl(),
     text,
@@ -317,7 +332,7 @@ function showWeChatShareGuide(mode = 'wechat') {
   hideWeChatShareGuide();
   const overlay = document.createElement('div');
   overlay.id = 'wechat-share-guide';
-  overlay.className = 'wechat-share-guide verdict-pixel';
+  overlay.className = 'wechat-share-guide';
   overlay.innerHTML = `
     <div class="wechat-share-mask"></div>
     <div class="wechat-share-panel">
@@ -369,7 +384,7 @@ function showShareCopySheet(text) {
   hideShareCopySheet();
   const overlay = document.createElement('div');
   overlay.id = 'share-copy-sheet';
-  overlay.className = 'share-copy-sheet verdict-pixel';
+  overlay.className = 'share-copy-sheet';
   overlay.innerHTML = `
     <div class="share-copy-mask"></div>
     <div class="share-copy-panel">
@@ -553,33 +568,51 @@ function renderDnaBars(dna) {
 function getIntroLines() {
   const stats = pseudoIntroStats(state.sessionId);
   return [
-    '未来档案加载中...',
-    '正在扫描过去的人生选择...',
-    `发现：${stats.hesitations} 次犹豫`,
-    `${stats.abandoned} 个半途而废的计划`,
-    `${stats.unsent} 条未发送的消息`,
+    '正在打开未来档案...',
+    '正在观察人生惯性...',
+    `记录：${stats.hesitations} 次犹豫`,
+    `${stats.abandoned} 个未完成的选择`,
+    `${stats.unsent} 段没说出口的话`,
   ];
 }
 
-function renderIntro() {
-  const lines = state.introLines ?? getIntroLines();
-
+function renderFutureSignalTitle(text, extraClass = '') {
+  const safe = escapeHtml(text);
+  const className = ['future-signal-title', extraClass].filter(Boolean).join(' ');
   return `
-    <div class="screen intro-screen verdict-pixel" data-screen="intro">
-      <h1 class="intro-title verdict-pixel">开启我的2031</h1>
-      <div class="intro-lines">
-        ${lines
-          .map(
-            (line, i) =>
-              `<p class="intro-line ${i <= state.introLineIndex ? 'visible' : ''} ${i >= 2 && i <= 4 ? 'highlight' : ''}">${escapeHtml(line)}</p>`
-          )
-          .join('')}
-      </div>
-      <p class="intro-ready ${state.introLineIndex >= lines.length ? 'visible' : ''}">未来已准备就绪</p>
+    <h1 class="${className}" aria-label="${safe}">
+      <span class="future-signal-text future-signal-base">${safe}</span>
+      <span class="future-signal-text future-signal-r" aria-hidden="true">${safe}</span>
+      <span class="future-signal-text future-signal-b" aria-hidden="true">${safe}</span>
+    </h1>
+  `;
+}
+
+function runFutureSignalGlitch() {
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.future-signal-title:not(.future-signal-done)').forEach((el) => {
+      el.classList.add('future-signal-active');
+      setTimeout(() => {
+        el.classList.remove('future-signal-active');
+        el.classList.add('future-signal-done');
+      }, 300);
+    });
+  });
+}
+
+function renderIntro() {
+  return `
+    <div class="screen intro-screen" data-screen="intro">
+      <p class="intro-brand">${BRAND.name}</p>
+      <h1 class="intro-hero">
+        ${BRAND.hero.map((line) => `<span class="intro-hero-line">${escapeHtml(line)}</span>`).join('')}
+      </h1>
+      <p class="intro-sub">${escapeHtml(BRAND.sub)}</p>
+      <p class="intro-desc">
+        ${BRAND.description.map((line) => `<span class="intro-desc-line">${escapeHtml(line)}</span>`).join('')}
+      </p>
       <div class="intro-actions">
-        <button class="btn btn-primary" id="btn-start" type="button" ${state.introLineIndex < lines.length ? 'disabled' : ''}>
-          开始推演未来
-        </button>
+        <button class="btn btn-primary btn-block" id="btn-start" type="button">${BRAND.ctaStart}</button>
       </div>
     </div>
   `;
@@ -602,12 +635,12 @@ function renderQuiz() {
   const canGoBack = state.questionIndex > 0;
 
   return `
-    <div class="screen screen-quiz verdict-pixel" data-screen="quiz">
+    <div class="screen screen-quiz" data-screen="quiz">
       <button class="quiz-back ${canGoBack ? '' : 'quiz-back--disabled'}" id="btn-back" type="button" ${canGoBack ? '' : 'disabled'}>← 上一题</button>
       <div class="quiz-header">
         <div class="progress-panel">
           <div class="clarity-label">
-            <span>未来清晰度</span>
+            <span>人生轨迹读取</span>
             <span class="clarity-value">${progress.percent}%</span>
           </div>
           <div class="clarity-bar" role="progressbar" aria-valuenow="${progress.percent}" aria-valuemin="0" aria-valuemax="100">
@@ -644,17 +677,17 @@ function renderQuiz() {
 
 function renderDna() {
   return `
-    <div class="screen screen-verdict dna-screen verdict-pixel" data-screen="dna">
-      <p class="verdict-from">来自2031年的自己</p>
-      <p class="dna-loading">Future DNA Analysis…</p>
+    <div class="screen screen-verdict dna-screen" data-screen="dna">
+      <p class="brand-eyebrow">${BRAND.observer}</p>
+      <p class="dna-loading">${BRAND.archiveLabel} · 正在读取档案…</p>
     </div>
   `;
 }
 
 function renderFutureLeakLoading() {
   return `
-    <div class="screen screen-leak screen-leak-loading verdict-pixel" data-screen="future-leak-loading">
-      <p class="leak-loading-text verdict-pixel">正在扫描未来...</p>
+    <div class="screen screen-leak screen-leak-loading" data-screen="future-leak-loading">
+      <p class="leak-loading-text">Future Signal · 信号扫描中…</p>
       <div class="leak-scan-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
         <div class="leak-scan-fill"></div>
       </div>
@@ -666,8 +699,8 @@ function renderFutureLeak() {
   const leak = state.futureLeak;
   const lines = leak?.lines ?? [];
   return `
-    <div class="screen screen-leak screen-leak-reveal verdict-pixel" data-screen="future-leak">
-      <p class="leak-archive">Future Archive #2031</p>
+    <div class="screen screen-leak screen-leak-reveal" data-screen="future-leak">
+      ${renderFutureSignalTitle(`${BRAND.archiveLabel} #2031`, 'future-signal-title--sm leak-archive-title')}
       <div class="leak-lines">
         ${lines
           .map(
@@ -692,16 +725,18 @@ function renderResultNav(current) {
 
 function renderResultIdentity() {
   ensureResult();
+  const s = state.result.scriptA;
   const dna = state.result.dna ?? {};
   return `
-    <div class="screen screen-verdict screen-identity verdict-pixel" data-screen="result-identity">
+    <div class="screen screen-verdict screen-identity" data-screen="result-identity">
       ${renderResultNav('result-identity')}
       <div class="verdict-body">
-        <p class="share-letter-title verdict-pixel">来自2031年的一封信</p>
+        <p class="brand-eyebrow">${BRAND.observer}</p>
+        ${renderFutureSignalTitle(s.name, 'verdict-name')}
         <div class="dna-bars">${renderDnaBars(dna)}</div>
-        <p class="verdict-system">Future DNA Analysis Complete</p>
+        <p class="verdict-system">${BRAND.archiveLabel} · Analysis Complete</p>
       </div>
-      <button class="btn btn-primary btn-block" id="btn-next" type="button">开启2031</button>
+      <button class="btn btn-primary btn-block" id="btn-next" type="button">查看未来</button>
     </div>
   `;
 }
@@ -712,32 +747,34 @@ function renderResultShare() {
   const tags = (r.lifeTags ?? s.verdict?.lifeTags ?? []).slice(0, 3);
   const poetry = renderSharePoetryHtml(r);
   return `
-    <div class="screen screen-verdict screen-share verdict-pixel" data-screen="result-share">
+    <div class="screen screen-verdict screen-share" data-screen="result-share">
       ${renderResultNav('result-share')}
       <div id="share-capture-root" class="share-capture-root">
         <div class="verdict-body verdict-body-share">
-          <h1 class="share-letter-title verdict-pixel">来自2031年的一封信</h1>
+          <p class="brand-eyebrow">${BRAND.observer}</p>
           ${
             poetry.hasPortrait
-              ? `<div class="share-poetry verdict-pixel">${poetry.portraitHtml}</div>`
+              ? `<div class="share-portrait-section">
+                  <div class="share-poetry">${poetry.portraitHtml}</div>
+                </div>`
               : ''
           }
           <div class="share-reminder-block ${poetry.showReminderBlock && poetry.hasReminder ? 'visible' : ''}">
-            <p class="share-reminder-label verdict-pixel">未来提醒</p>
-            <div class="share-poetry share-poetry--reminder verdict-pixel">${poetry.reminderHtml}</div>
+            <p class="share-reminder-label">未来提醒</p>
+            <div class="share-poetry share-poetry--reminder">${poetry.reminderHtml}</div>
           </div>
           <div class="share-tags ${poetry.showTags ? 'visible' : ''}">
-            ${tags.map((t) => `<span class="share-tag verdict-pixel">${escapeHtml(t)}</span>`).join('')}
+            ${tags.map((t) => `<span class="share-tag">${escapeHtml(t)}</span>`).join('')}
           </div>
         </div>
       </div>
       <div class="share-actions">
         <button class="btn btn-primary btn-block" id="btn-share" type="button">分享给朋友</button>
         <div class="actions-row">
-          <button class="btn btn-ghost btn-sm verdict-pixel" id="btn-copy" type="button">复制未来</button>
-          <button class="btn btn-ghost btn-sm verdict-pixel" id="btn-save" type="button">保存图片</button>
+          <button class="btn btn-secondary btn-sm" id="btn-copy" type="button">复制未来</button>
+          <button class="btn btn-secondary btn-sm" id="btn-save" type="button">保存图片</button>
         </div>
-        <button class="btn btn-ghost btn-block verdict-pixel" id="btn-restart" type="button">重新推演</button>
+        <button class="btn btn-ghost btn-block" id="btn-restart" type="button">重新查看</button>
       </div>
     </div>
   `;
@@ -806,12 +843,15 @@ function render() {
     runLeakLineAnimation();
   } else if (state.screen === 'future-leak') {
     syncLeakDom();
+    runFutureSignalGlitch();
   } else if (state.screen === 'result-share') {
     if (state.shareRevealIndex < 0) {
       runShareLineAnimation();
     } else {
       syncShareDom();
     }
+  } else if (state.screen === 'result-identity') {
+    runFutureSignalGlitch();
   }
 }
 
@@ -896,7 +936,7 @@ async function saveImageBlob(blob) {
 
   if (navigator.canShare?.({ files: [file] })) {
     try {
-      await navigator.share({ files: [file], title: '五年后的自己' });
+      await navigator.share({ files: [file], title: BRAND.name });
       showToast('已唤起分享，可选择保存到相册');
       return;
     } catch (err) {
@@ -1234,7 +1274,6 @@ function bindEvents() {
     state.leakLineIndex = -1;
     state.leakShowButton = false;
     setScreen('intro');
-    runIntroAnimation();
   });
 
 }
@@ -1242,5 +1281,5 @@ function bindEvents() {
 bootstrap().catch((err) => {
   console.error(err);
   app.innerHTML =
-    '<div class="screen verdict-pixel"><p class="load-error">加载失败，请使用本地服务器运行（见 start.sh）</p></div>';
+    '<div class="screen"><p class="load-error">档案加载失败，请使用本地服务器运行（见 start.sh）</p></div>';
 });
