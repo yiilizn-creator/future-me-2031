@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'Zpix';
   src: url('https://cdn.jsdelivr.net/gh/SolidZORO/zpix-pixel-font@v3.1.9/dist/zpix.woff2') format('woff2');
-  font-display: swap;
+  font-display: block;
 }
 
 :root {
@@ -38,6 +38,16 @@ html {
   height: 100%;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+}
+
+html.pixel-font,
+html.pixel-font body,
+html.pixel-font #app,
+html.pixel-font #app *:not(svg):not(path):not(rect):not(circle) {
+  font-family: var(--font-pixel) !important;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  font-weight: normal;
 }
 
 #app,
@@ -174,7 +184,16 @@ body {
   }
 }
 
-/* Intro */
+/* Intro · 首页像素字体 */
+.intro-screen,
+.intro-screen * {
+  font-family: var(--font-pixel) !important;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  font-smooth: never;
+  font-weight: normal;
+}
+
 .intro-screen {
   justify-content: center;
   align-items: center;
@@ -182,6 +201,18 @@ body {
   gap: 0;
   padding-left: 20px;
   padding-right: 20px;
+}
+
+.intro-brand,
+.intro-hero,
+.intro-hero-line,
+.intro-sub,
+.intro-desc,
+.intro-desc-line,
+.intro-actions,
+.intro-actions .btn {
+  font-family: var(--font-pixel) !important;
+  font-weight: normal;
 }
 
 .intro-brand {

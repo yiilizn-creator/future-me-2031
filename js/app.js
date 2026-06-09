@@ -1,5 +1,5 @@
-import { QUESTIONS } from './questions.js?v=c6e84f7';
-import { createEngine } from './engine.js?v=c6e84f7';
+import { QUESTIONS } from './questions.js?v=e85a3b0';
+import { createEngine } from './engine.js?v=e85a3b0';
 
 const RESULT_SCREENS = ['result-identity', 'result-share'];
 const TOTAL_QUESTIONS = QUESTIONS.length;
