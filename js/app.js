@@ -46,9 +46,13 @@ const state = {
   leakLineIndex: -1,
   leakShowButton: false,
   leakShownAt: 0,
+  shareRevealIndex: -1,
+  shareLineCount: 0,
+  shareShowTags: false,
 };
 
 let engine = null;
+let shareAnimTimer = null;
 let DIMS = [];
 let getDimLabel = (d) => d;
 let createSessionId = () => '';
@@ -121,6 +125,15 @@ function trackEvent(name, payload = {}) {
   }
 }
 
+function isWeChatBrowser() {
+  return /MicroMessenger/i.test(navigator.userAgent);
+}
+
+function getSiteBaseUrl() {
+  const path = location.pathname.replace(/\/[^/]*$/, '/');
+  return `${location.origin}${path.endsWith('/') ? path : `${path}/`}`;
+}
+
 function getShareLink() {
   const url = new URL(location.href);
   url.search = '?reset=1';
@@ -128,11 +141,224 @@ function getShareLink() {
   return url.toString();
 }
 
+function getShareImageUrl() {
+  return `${getSiteBaseUrl()}share-card.png`;
+}
+
+function getShareSpreadFooter() {
+  return `人生剧透 #2031  ${getShareLink()}`;
+}
+
+function getResultPortrait(result) {
+  const r = result ?? state.result;
+  if (!r) return [];
+  const portrait = r.futurePortrait ?? r.scriptA?.verdict?.portrait;
+  if (Array.isArray(portrait) && portrait.length) return portrait;
+  const quote = r.shareQuote ?? r.scriptA?.verdict?.quote;
+  if (quote) return toPoetryLines(quote);
+  const desc = r.scriptA?.identity?.description;
+  if (Array.isArray(desc) && desc.length) return desc;
+  return [];
+}
+
+function getResultReminder(result) {
+  const r = result ?? state.result;
+  if (!r) return '';
+  return (
+    r.futureReminder ??
+    r.scriptA?.verdict?.reminder ??
+    r.shareQuote ??
+    r.scriptA?.verdict?.quote ??
+    ''
+  );
+}
+
+function getShareContentLines(result) {
+  const r = result ?? state.result;
+  const portrait = toPoetryLines(getResultPortrait(r));
+  const reminder = toPoetryLines(getResultReminder(r));
+  return { portrait, reminder, total: portrait.length + reminder.length };
+}
+
+function toPoetryLines(textOrLines) {
+  if (Array.isArray(textOrLines)) {
+    return textOrLines.map((line) => String(line).trim()).filter(Boolean);
+  }
+  return String(textOrLines)
+    .split(/[，,。！？；\n]/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function renderSharePoetryHtml(result) {
+  const { portrait, reminder } = getShareContentLines(result);
+  const portraitHtml = portrait
+    .map(
+      (line, i) =>
+        `<p class="share-poetry-line ${i <= state.shareRevealIndex ? 'visible' : ''}" data-share-line="${i}">${escapeHtml(line)}</p>`
+    )
+    .join('');
+  const reminderStart = portrait.length;
+  const reminderHtml = reminder
+    .map((line, i) => {
+      const idx = reminderStart + i;
+      return `<p class="share-poetry-line ${idx <= state.shareRevealIndex ? 'visible' : ''}" data-share-line="${idx}">${escapeHtml(line)}</p>`;
+    })
+    .join('');
+  const showReminderBlock =
+    portrait.length === 0 || state.shareRevealIndex >= portrait.length;
+  const showTags = state.shareShowTags;
+
+  return {
+    portraitHtml,
+    reminderHtml,
+    showReminderBlock,
+    showTags,
+    hasPortrait: portrait.length > 0,
+    hasReminder: reminder.length > 0,
+  };
+}
+
 function buildShareText() {
   const r = state.result;
-  const quote = r?.shareQuote ?? '';
   const name = r?.scriptA?.name ?? '五年后的自己';
-  return `${quote}\n\n— ${name}\n\n来测测你的五年后 → ${getShareLink()}`;
+  const portrait = toPoetryLines(getResultPortrait(r)).join('\n');
+  const reminder = toPoetryLines(getResultReminder(r)).join('\n');
+  const body = [portrait, reminder ? `\n未来提醒\n${reminder}` : ''].filter(Boolean).join('\n');
+  return `${body}\n\n— ${name}\n\n来测测你的五年后 → ${getShareLink()}`;
+}
+
+function buildCopyFutureText() {
+  const r = state.result;
+  const tags = (r.lifeTags ?? r.scriptA?.verdict?.lifeTags ?? []).slice(0, 3).join(' · ');
+  const portrait = toPoetryLines(getResultPortrait(r)).join('\n');
+  const reminder = toPoetryLines(getResultReminder(r)).join('\n');
+  return [
+    portrait,
+    reminder ? `未来提醒\n${reminder}` : '',
+    tags,
+    '来自2031年的一封信',
+    getShareSpreadFooter(),
+  ]
+    .filter(Boolean)
+    .join('\n\n');
+}
+
+function buildSharePayload() {
+  const text = buildShareText();
+  const r = state.result;
+  const name = r?.scriptA?.name ?? '五年后的自己';
+  const portrait = toPoetryLines(getResultPortrait(r)).join(' ');
+  const desc = portrait.length > 80 ? `${portrait.slice(0, 80)}…` : portrait || '来测测你的 2031';
+  return {
+    title: `来自2031年的一封信 · ${name}`,
+    desc,
+    link: getShareLink(),
+    imgUrl: getShareImageUrl(),
+    text,
+  };
+}
+
+function onWeixinBridgeReady(fn) {
+  if (window.WeixinJSBridge) {
+    fn();
+    return;
+  }
+  document.addEventListener('WeixinJSBridgeReady', fn, { once: true });
+}
+
+function invokeWeixinShare(method, payload) {
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (!settled) reject(new Error('weixin bridge timeout'));
+    }, 3500);
+
+    const run = () => {
+      try {
+        window.WeixinJSBridge.invoke(
+          method,
+          {
+            appid: '',
+            img_url: payload.imgUrl,
+            img_width: '300',
+            img_height: '300',
+            link: payload.link,
+            desc: payload.desc,
+            title: payload.title,
+          },
+          (res) => {
+            settled = true;
+            clearTimeout(timer);
+            const msg = res?.err_msg ?? '';
+            if (msg.includes(':ok') || msg.includes(':confirm')) {
+              resolve(res);
+            } else {
+              reject(res);
+            }
+          }
+        );
+      } catch (err) {
+        settled = true;
+        clearTimeout(timer);
+        reject(err);
+      }
+    };
+
+    onWeixinBridgeReady(run);
+  });
+}
+
+function hideWeChatShareGuide() {
+  document.getElementById('wechat-share-guide')?.remove();
+}
+
+function showWeChatShareGuide(mode = 'wechat') {
+  hideWeChatShareGuide();
+  const overlay = document.createElement('div');
+  overlay.id = 'wechat-share-guide';
+  overlay.className = 'wechat-share-guide verdict-pixel';
+  overlay.innerHTML = `
+    <div class="wechat-share-mask"></div>
+    <div class="wechat-share-panel">
+      ${
+        mode === 'wechat'
+          ? `<div class="wechat-share-arrow" aria-hidden="true"></div>
+             <p class="wechat-share-tip">点击右上角 <strong>···</strong></p>
+             <p class="wechat-share-tip-sub">选择「转发给朋友」</p>`
+          : `<p class="wechat-share-tip">请先复制链接</p>
+             <p class="wechat-share-tip-sub">在微信中打开后再分享给朋友</p>`
+      }
+      <div class="wechat-share-contacts" aria-hidden="true">
+        ${['文件传输助手', '最近聊天', '朋友A', '朋友B', '更多']
+          .map(
+            (label, i) =>
+              `<div class="wechat-contact-chip" style="--i:${i}">
+                <span class="wechat-contact-avatar"></span>
+                <span class="wechat-contact-name">${escapeHtml(label)}</span>
+              </div>`
+          )
+          .join('')}
+      </div>
+      <button type="button" class="btn btn-primary btn-block" id="btn-share-guide-close">知道了</button>
+      ${
+        mode !== 'wechat'
+          ? '<button type="button" class="btn btn-ghost btn-block" id="btn-share-copy-link">复制链接</button>'
+          : ''
+      }
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.querySelector('#btn-share-guide-close')?.addEventListener('click', hideWeChatShareGuide);
+  overlay.querySelector('.wechat-share-mask')?.addEventListener('click', hideWeChatShareGuide);
+  overlay.querySelector('#btn-share-copy-link')?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(getShareLink());
+      showToast('链接已复制，请在微信中打开');
+    } catch {
+      showToast('复制失败，请手动复制地址栏链接');
+    }
+  });
 }
 
 function hideShareCopySheet() {
@@ -165,13 +391,29 @@ async function shareToFriend() {
   saveSession();
   trackEvent('future_leak_share', { action: 'btn-share' });
 
-  const text = buildShareText();
+  const payload = buildSharePayload();
+
+  if (isWeChatBrowser()) {
+    const methods = ['shareWechatMessage', 'sendAppMessage'];
+    for (const method of methods) {
+      try {
+        await invokeWeixinShare(method, payload);
+        trackEvent('wechat_share_invoke', { method, ok: true });
+        return;
+      } catch (err) {
+        trackEvent('wechat_share_invoke', { method, ok: false, err: String(err?.err_msg ?? err) });
+      }
+    }
+    showWeChatShareGuide('wechat');
+    return;
+  }
 
   if (navigator.share) {
     try {
       await navigator.share({
-        title: '五年后的自己模拟器',
-        text,
+        title: payload.title,
+        text: payload.text,
+        url: payload.link,
       });
       return;
     } catch (err) {
@@ -180,14 +422,14 @@ async function shareToFriend() {
   }
 
   try {
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(payload.text);
   } catch {
     showToast('复制失败，请手动复制');
-    showShareCopySheet(text);
+    showShareCopySheet(payload.text);
     return;
   }
 
-  showShareCopySheet(text);
+  showShareCopySheet(payload.text);
 }
 
 function getFirstUnansweredIndex() {
@@ -261,7 +503,17 @@ function loadSession() {
   }
 }
 
+function resetShareReveal() {
+  stopShareAnimation();
+  state.shareRevealIndex = -1;
+  state.shareLineCount = 0;
+  state.shareShowTags = false;
+}
+
 function setScreen(screen) {
+  if (screen === 'result-share' && state.screen !== 'result-share') {
+    resetShareReveal();
+  }
   state.screen = screen;
   saveSession();
   render();
@@ -281,15 +533,19 @@ function formatCommaBreak(text) {
 }
 
 function renderDnaBars(dna) {
+  if (!dna) return '';
   return DNA_BAR_ORDER.map(({ key, label }) => {
-    const filled = Math.round((dna[key] / 100) * DNA_BLOCKS);
-    const bar =
-      '█'.repeat(Math.max(0, filled)) +
-      '░'.repeat(Math.max(0, DNA_BLOCKS - filled));
+    const pct = Math.max(0, Math.min(100, Number(dna[key]) || 0));
+    const filledCount = Math.round((pct / 100) * DNA_BLOCKS);
+    const blocks = Array.from({ length: DNA_BLOCKS }, (_, i) => {
+      const filled = i < filledCount;
+      return `<div class="dna-bar-block ${filled ? 'filled' : ''}"></div>`;
+    }).join('');
     return `
       <div class="dna-bar-row">
         <span class="dna-bar-label">${label}</span>
-        <span class="dna-bar-track" aria-label="${label} ${dna[key]}%">${bar}</span>
+        <div class="dna-bar-track" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100">${blocks}</div>
+        <span class="dna-bar-value">${pct}</span>
       </div>`;
   }).join('');
 }
@@ -343,10 +599,12 @@ function renderQuiz() {
     return `<span class="progress-dot ${done ? 'done' : ''} ${active ? 'active' : ''}"></span>`;
   }).join('');
 
+  const canGoBack = state.questionIndex > 0;
+
   return `
     <div class="screen screen-quiz verdict-pixel" data-screen="quiz">
+      <button class="quiz-back ${canGoBack ? '' : 'quiz-back--disabled'}" id="btn-back" type="button" ${canGoBack ? '' : 'disabled'}>← 上一题</button>
       <div class="quiz-header">
-        ${state.questionIndex > 0 ? '<button class="quiz-back" id="btn-back" type="button">← 上一题</button>' : '<div class="quiz-back-placeholder"></div>'}
         <div class="progress-panel">
           <div class="clarity-label">
             <span>未来清晰度</span>
@@ -433,14 +691,13 @@ function renderResultNav(current) {
 }
 
 function renderResultIdentity() {
-  const s = state.result.scriptA;
-  const dna = state.result.dna;
+  ensureResult();
+  const dna = state.result.dna ?? {};
   return `
     <div class="screen screen-verdict screen-identity verdict-pixel" data-screen="result-identity">
       ${renderResultNav('result-identity')}
       <div class="verdict-body">
-        <p class="verdict-from">来自2031年的自己</p>
-        <h1 class="verdict-name">${escapeHtml(s.name)}</h1>
+        <p class="share-letter-title verdict-pixel">来自2031年的一封信</p>
         <div class="dna-bars">${renderDnaBars(dna)}</div>
         <p class="verdict-system">Future DNA Analysis Complete</p>
       </div>
@@ -453,14 +710,23 @@ function renderResultShare() {
   const r = state.result;
   const s = r.scriptA;
   const tags = (r.lifeTags ?? s.verdict?.lifeTags ?? []).slice(0, 3);
+  const poetry = renderSharePoetryHtml(r);
   return `
     <div class="screen screen-verdict screen-share verdict-pixel" data-screen="result-share">
       ${renderResultNav('result-share')}
       <div id="share-capture-root" class="share-capture-root">
-        <p class="share-header verdict-pixel">来自2031年的自己</p>
         <div class="verdict-body verdict-body-share">
-          <p class="share-quote verdict-pixel">${formatCommaBreak(r.shareQuote)}</p>
-          <div class="share-tags">
+          <h1 class="share-letter-title verdict-pixel">来自2031年的一封信</h1>
+          ${
+            poetry.hasPortrait
+              ? `<div class="share-poetry verdict-pixel">${poetry.portraitHtml}</div>`
+              : ''
+          }
+          <div class="share-reminder-block ${poetry.showReminderBlock && poetry.hasReminder ? 'visible' : ''}">
+            <p class="share-reminder-label verdict-pixel">未来提醒</p>
+            <div class="share-poetry share-poetry--reminder verdict-pixel">${poetry.reminderHtml}</div>
+          </div>
+          <div class="share-tags ${poetry.showTags ? 'visible' : ''}">
             ${tags.map((t) => `<span class="share-tag verdict-pixel">${escapeHtml(t)}</span>`).join('')}
           </div>
         </div>
@@ -468,7 +734,7 @@ function renderResultShare() {
       <div class="share-actions">
         <button class="btn btn-primary btn-block" id="btn-share" type="button">分享给朋友</button>
         <div class="actions-row">
-          <button class="btn btn-ghost btn-sm verdict-pixel" id="btn-copy" type="button">复制判词</button>
+          <button class="btn btn-ghost btn-sm verdict-pixel" id="btn-copy" type="button">复制未来</button>
           <button class="btn btn-ghost btn-sm verdict-pixel" id="btn-save" type="button">保存图片</button>
         </div>
         <button class="btn btn-ghost btn-block verdict-pixel" id="btn-restart" type="button">重新推演</button>
@@ -478,9 +744,8 @@ function renderResultShare() {
 }
 
 function ensureResult() {
-  if (!state.result && Object.keys(state.answers).length === TOTAL_QUESTIONS) {
-    state.result = computeResult(state.answers, state.sessionId);
-  }
+  if (Object.keys(state.answers).length < TOTAL_QUESTIONS) return false;
+  state.result = computeResult(state.answers, state.sessionId);
   return Boolean(state.result);
 }
 
@@ -541,6 +806,12 @@ function render() {
     runLeakLineAnimation();
   } else if (state.screen === 'future-leak') {
     syncLeakDom();
+  } else if (state.screen === 'result-share') {
+    if (state.shareRevealIndex < 0) {
+      runShareLineAnimation();
+    } else {
+      syncShareDom();
+    }
   }
 }
 
@@ -600,12 +871,10 @@ function showToast(msg) {
 }
 
 async function copyQuote() {
-  const s = state.result.scriptA;
-  const tags = (state.result.lifeTags ?? s.verdict?.lifeTags ?? []).slice(0, 3).join(' · ');
-  const text = `${state.result.shareQuote}\n\n${s.name}${tags ? `\n${tags}` : ''}\n\n来自2031年的自己`;
+  const text = buildCopyFutureText();
   try {
     await navigator.clipboard.writeText(text);
-    showToast('文案已复制');
+    showToast('未来已复制');
   } catch {
     showToast('复制失败，请手动复制');
   }
@@ -682,6 +951,12 @@ async function captureShareScreen() {
     actions.style.visibility = 'hidden';
   }
 
+  const prevReveal = state.shareRevealIndex;
+  const prevShowTags = state.shareShowTags;
+  state.shareRevealIndex = Math.max(0, state.shareLineCount - 1);
+  state.shareShowTags = true;
+  syncShareDom();
+
   try {
     const html2canvas = await loadHtml2Canvas();
     const canvas = await html2canvas(root, {
@@ -703,6 +978,9 @@ async function captureShareScreen() {
     console.error(err);
     showToast('海报生成失败，请重试');
   } finally {
+    state.shareRevealIndex = prevReveal;
+    state.shareShowTags = prevShowTags;
+    syncShareDom();
     if (actions) {
       actions.style.visibility = actions.dataset.capturePrevVisibility || '';
       delete actions.dataset.capturePrevVisibility;
@@ -729,6 +1007,57 @@ function stopLeakAnimation() {
     clearInterval(leakAnimTimer);
     leakAnimTimer = null;
   }
+}
+
+function stopShareAnimation() {
+  if (shareAnimTimer) {
+    clearInterval(shareAnimTimer);
+    shareAnimTimer = null;
+  }
+}
+
+function syncShareDom() {
+  const screen = document.querySelector('[data-screen="result-share"]');
+  if (!screen) return;
+
+  screen.querySelectorAll('[data-share-line]').forEach((el) => {
+    const idx = Number(el.dataset.shareLine);
+    el.classList.toggle('visible', idx <= state.shareRevealIndex);
+  });
+
+  const { portrait, total } = getShareContentLines();
+  screen
+    .querySelector('.share-reminder-block')
+    ?.classList.toggle('visible', portrait.length === 0 || state.shareRevealIndex >= portrait.length);
+  screen.querySelector('.share-tags')?.classList.toggle('visible', state.shareShowTags);
+}
+
+function runShareLineAnimation() {
+  if (!state.result) return;
+
+  stopShareAnimation();
+  const { total } = getShareContentLines();
+  state.shareLineCount = total;
+  state.shareRevealIndex = -1;
+  state.shareShowTags = false;
+  syncShareDom();
+
+  if (total === 0) {
+    state.shareShowTags = true;
+    syncShareDom();
+    return;
+  }
+
+  shareAnimTimer = setInterval(() => {
+    if (state.shareRevealIndex < state.shareLineCount - 1) {
+      state.shareRevealIndex++;
+      syncShareDom();
+    } else {
+      stopShareAnimation();
+      state.shareShowTags = true;
+      syncShareDom();
+    }
+  }, 320);
 }
 
 function syncLeakDom() {
@@ -888,6 +1217,8 @@ function bindEvents() {
   document.getElementById('btn-restart')?.addEventListener('click', () => {
     stopLeakFlow();
     stopLeakAnimation();
+    stopShareAnimation();
+    resetShareReveal();
     quizSubmitting = false;
     sessionStorage.removeItem('future-me-session');
     state.sessionId = createSessionId();

@@ -126,6 +126,7 @@ body {
   height: 100dvh;
   max-height: 100dvh;
   overflow: hidden;
+  position: relative;
 }
 
 @keyframes fadeIn {
@@ -296,10 +297,7 @@ body {
   flex-direction: column;
   gap: 10px;
   flex-shrink: 0;
-}
-
-.quiz-back-placeholder {
-  height: 32px;
+  padding-top: 44px;
 }
 
 .progress-panel {
@@ -308,7 +306,10 @@ body {
 }
 
 .quiz-back {
-  align-self: flex-start;
+  position: absolute;
+  top: max(16px, var(--safe-top));
+  left: 16px;
+  z-index: 3;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -321,6 +322,11 @@ body {
   box-shadow:
     3px 3px 8px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.quiz-back--disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 .quiz-back:hover {
@@ -560,8 +566,8 @@ body {
 
 .dna-bar-row {
   display: grid;
-  grid-template-columns: 72px 1fr;
-  gap: 10px;
+  grid-template-columns: 72px minmax(0, 1fr) 28px;
+  gap: 8px;
   align-items: center;
   font-size: 11px;
   line-height: 1.4;
@@ -573,25 +579,56 @@ body {
 }
 
 .dna-bar-track {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 3px;
+  align-items: center;
+  min-height: 12px;
+  min-width: 0;
+  width: 100%;
+}
+
+.dna-bar-block {
+  flex: 1 1 0;
+  min-width: 6px;
+  max-width: 14px;
+  height: 10px;
+  background: rgba(91, 140, 255, 0.14);
+  border: 1px solid rgba(91, 140, 255, 0.24);
+  box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.35);
+}
+
+.dna-bar-block.filled {
+  background: var(--blue);
+  border-color: rgba(138, 157, 255, 0.85);
+  box-shadow:
+    0 0 8px rgba(91, 140, 255, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.dna-bar-value {
+  font-size: 11px;
+  line-height: 1;
   color: var(--blue);
-  letter-spacing: 0.12em;
-  font-size: 12px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
   text-shadow: 0 0 8px rgba(91, 140, 255, 0.35);
-  word-break: keep-all;
 }
 
 .verdict-system {
   font-size: 10px;
-  color: var(--text-muted);
+  color: var(--blue);
   letter-spacing: 0.08em;
-  opacity: 0.7;
+  opacity: 0.85;
+  text-shadow: 0 0 8px rgba(91, 140, 255, 0.35);
 }
 
 .dna-loading {
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--blue);
   animation: pulse 1.5s steps(4) infinite;
   margin-top: 24px;
+  text-shadow: 0 0 8px rgba(91, 140, 255, 0.35);
 }
 
 .verdict-quote {
@@ -643,20 +680,106 @@ body {
 }
 
 .verdict-body-share {
-  gap: 28px;
+  gap: 20px;
   flex: 1;
-  justify-content: center;
-  padding: 12px 0 24px;
+  justify-content: flex-start;
+  padding: 8px 0 20px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.screen-share .share-quote {
-  font-size: clamp(18px, 5.2vw, 26px);
-  line-height: 1.8;
+.screen-share .share-letter-title,
+.screen-identity .share-letter-title {
+  font-size: clamp(22px, 6.4vw, 32px);
+  line-height: 1.5;
   color: var(--text);
-  letter-spacing: 0.02em;
+  margin: 0 0 16px;
+  letter-spacing: 0.06em;
+  text-align: center;
+  font-weight: normal;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45);
+}
+
+.screen-share .share-identity {
+  font-size: clamp(22px, 6.4vw, 32px);
+  line-height: 1.5;
+  color: var(--text);
+  margin: 0 0 8px;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.share-poetry {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px 8px;
+  text-align: center;
+}
+
+.share-poetry-line {
+  font-size: clamp(12px, 3.6vw, 16px);
+  line-height: 1.65;
+  color: var(--text-body);
   margin: 0;
+  letter-spacing: 0.06em;
   max-width: 100%;
-  padding: 0 8px;
+  opacity: 0;
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 0.3s steps(3);
+}
+
+.share-poetry-line.visible {
+  opacity: 1;
+  visibility: visible;
+  height: auto;
+  margin: 0;
+}
+
+.screen-share .share-reminder-block {
+  width: 100%;
+  padding: 16px 12px;
+  border-radius: 12px;
+  background: rgba(18, 18, 32, 0.42);
+  border: 1px solid var(--glass-border);
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  max-height: 0;
+  overflow: hidden;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: opacity 0.35s steps(3), max-height 0.35s ease;
+}
+
+.screen-share .share-reminder-block.visible {
+  opacity: 1;
+  visibility: visible;
+  max-height: 320px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.screen-share .share-reminder-label {
+  font-size: 10px;
+  color: #9d6bff;
+  letter-spacing: 0.12em;
+  margin: 0 0 12px;
+}
+
+.share-poetry--reminder {
+  gap: 8px;
+  padding: 0;
+}
+
+.share-poetry--reminder .share-poetry-line {
+  font-size: clamp(12px, 3.5vw, 15px);
+  color: #7a3fd4;
+  letter-spacing: 0.05em;
 }
 
 .screen-share .share-tags {
@@ -667,6 +790,16 @@ body {
   align-items: center;
   gap: 10px;
   width: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: opacity 0.4s steps(3), transform 0.35s ease;
+}
+
+.screen-share .share-tags.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .screen-share .share-tag {
@@ -1199,18 +1332,19 @@ body {
 .nav-dot {
   width: 10px;
   height: 10px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(91, 140, 255, 0.18);
+  border: 1px solid rgba(91, 140, 255, 0.32);
   cursor: pointer;
   padding: 0;
   box-shadow:
     2px 2px 4px rgba(0, 0, 0, 0.5),
-    inset 1px 1px 0 rgba(255, 255, 255, 0.08);
-  transition: background 0.15s steps(2);
+    inset 1px 1px 0 rgba(255, 255, 255, 0.06);
+  transition: background 0.15s steps(2), box-shadow 0.15s ease;
 }
 
 .nav-dot.active {
   background: var(--blue);
+  border-color: rgba(138, 157, 255, 0.85);
   box-shadow:
     0 0 8px rgba(91, 140, 255, 0.6),
     inset 1px 1px 0 rgba(255, 255, 255, 0.2);
@@ -1431,8 +1565,17 @@ body {
     font-size: 24px;
   }
 
-  .screen-share .share-quote {
-    font-size: 17px;
+  .screen-share .share-identity {
+    font-size: 20px;
+  }
+
+  .share-poetry-line {
+    font-size: 11px;
+    max-width: 92%;
+  }
+
+  .share-poetry--reminder .share-poetry-line {
+    font-size: 11px;
   }
 
   .screen-share .share-tag {
@@ -1444,7 +1587,16 @@ body {
   }
 
   .dna-bar-row {
-    grid-template-columns: 64px 1fr;
+    grid-template-columns: 64px minmax(0, 1fr) 24px;
+    font-size: 10px;
+  }
+
+  .dna-bar-block {
+    min-width: 5px;
+    height: 8px;
+  }
+
+  .dna-bar-value {
     font-size: 10px;
   }
 

@@ -313,6 +313,9 @@ export function createEngine(answerMap, scriptsData, universeReportData, futureL
       scriptA.verdict?.lifeTags ??
       scriptA.shareQuotes.slice(0, 3).map((q) => q.slice(0, 8));
 
+    const futurePortrait = scriptA.verdict?.portrait ?? null;
+    const futureReminder = scriptA.verdict?.reminder ?? null;
+
     return {
       sessionId,
       dna,
@@ -322,6 +325,8 @@ export function createEngine(answerMap, scriptsData, universeReportData, futureL
       shadowDim: sorted[sorted.length - 1][0],
       shareQuote,
       lifeTags,
+      futurePortrait,
+      futureReminder,
     };
   }
 

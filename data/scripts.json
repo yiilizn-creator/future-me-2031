@@ -30,12 +30,42 @@
         "futureOpportunity": "把「收藏」变成「出土」——选一个灵感深挖"
       },
       "timeline": [
-        { "year": 2026, "type": "normal", "label": "继续囤积灵感", "event": "又收藏了47个「以后要做」的想法" },
-        { "year": 2027, "type": "normal", "label": "反复复盘", "event": "第三次重写那份没发出去的计划" },
-        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "终于把一个想法做到了60%" },
-        { "year": 2029, "type": "normal", "label": "深度挖掘", "event": "发现自己擅长「把模糊变清晰」" },
-        { "year": 2030, "type": "turning", "label": "关键决定", "event": "删掉了80%的收藏夹，只留下3个项目" },
-        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "成为那个「能讲清自己从哪来」的人" }
+        {
+          "year": 2026,
+          "type": "normal",
+          "label": "继续囤积灵感",
+          "event": "又收藏了47个「以后要做」的想法"
+        },
+        {
+          "year": 2027,
+          "type": "normal",
+          "label": "反复复盘",
+          "event": "第三次重写那份没发出去的计划"
+        },
+        {
+          "year": 2028,
+          "type": "turning",
+          "label": "第一次重要转折",
+          "event": "终于把一个想法做到了60%"
+        },
+        {
+          "year": 2029,
+          "type": "normal",
+          "label": "深度挖掘",
+          "event": "发现自己擅长「把模糊变清晰」"
+        },
+        {
+          "year": 2030,
+          "type": "turning",
+          "label": "关键决定",
+          "event": "删掉了80%的收藏夹，只留下3个项目"
+        },
+        {
+          "year": 2031,
+          "type": "milestone",
+          "label": "人生新阶段",
+          "event": "成为那个「能讲清自己从哪来」的人"
+        }
       ],
       "report": {
         "mainQuest": "终于开始做那些拖延三年的事",
@@ -45,7 +75,20 @@
       },
       "verdict": {
         "quote": "收藏了那么多未来，却很少真正抵达。",
-        "lifeTags": ["灵感收藏家", "迟迟未动", "其实没放弃"]
+        "lifeTags": [
+          "被理解需求",
+          "创作者人格",
+          "终于相信自己"
+        ],
+        "portrait": [
+          "2031年的你，",
+          "依然会怀疑自己。",
+          "但不会再因为怀疑停下。",
+          "你终于明白：",
+          "被认可很重要。",
+          "但认可自己更重要。"
+        ],
+        "reminder": "未来最大的掌声。来自自己。"
       },
       "shareQuotes": [
         "五年后的我最大的成就，不是成功，是终于开始。",
@@ -86,12 +129,42 @@
         "futureOpportunity": "把一个副业做成可持续现金流"
       },
       "timeline": [
-        { "year": 2026, "type": "normal", "label": "疯狂试错", "event": "同时开了4个小项目" },
-        { "year": 2027, "type": "normal", "label": "快速迭代", "event": "第3个项目开始有人付费" },
-        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "关掉3个，All in 那1个" },
-        { "year": 2029, "type": "normal", "label": "规模扩大", "event": "从「我一个人」变成「小团队」" },
-        { "year": 2030, "type": "turning", "label": "关键决定", "event": "接受不完美，但接受收入" },
-        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "不再自称「还在准备」，改称「在做」" }
+        {
+          "year": 2026,
+          "type": "normal",
+          "label": "疯狂试错",
+          "event": "同时开了4个小项目"
+        },
+        {
+          "year": 2027,
+          "type": "normal",
+          "label": "快速迭代",
+          "event": "第3个项目开始有人付费"
+        },
+        {
+          "year": 2028,
+          "type": "turning",
+          "label": "第一次重要转折",
+          "event": "关掉3个，All in 那1个"
+        },
+        {
+          "year": 2029,
+          "type": "normal",
+          "label": "规模扩大",
+          "event": "从「我一个人」变成「小团队」"
+        },
+        {
+          "year": 2030,
+          "type": "turning",
+          "label": "关键决定",
+          "event": "接受不完美，但接受收入"
+        },
+        {
+          "year": 2031,
+          "type": "milestone",
+          "label": "人生新阶段",
+          "event": "不再自称「还在准备」，改称「在做」"
+        }
       ],
       "report": {
         "mainQuest": "把想法变成能交付的东西",
@@ -101,7 +174,18 @@
       },
       "verdict": {
         "quote": "你不是没想法，是习惯把上线日期设成明天。",
-        "lifeTags": ["先上线再说", "收藏夹创业", "终于敢交付"]
+        "lifeTags": [
+          "灵感过载",
+          "作品诞生",
+          "停止收藏"
+        ],
+        "portrait": [
+          "2031年的你，",
+          "终于做出了第一个真正属于自己的作品。",
+          "它未必伟大。",
+          "却改变了你看待自己的方式。"
+        ],
+        "reminder": "未来不会奖励最会想的人。会奖励做出来的人。"
       },
       "shareQuotes": [
         "未来没有奖励我更聪明，它奖励我终于行动。",
@@ -142,12 +226,42 @@
         "futureOpportunity": "把「深夜洞察」变成「晨间第一个动作」"
       },
       "timeline": [
-        { "year": 2026, "type": "normal", "label": "蓝图叠加", "event": "写了第7版人生五年计划" },
-        { "year": 2027, "type": "normal", "label": "灵感爆发", "event": "一个深夜想通了职业方向" },
-        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "把计划砍到只剩3条可执行项" },
-        { "year": 2029, "type": "normal", "label": "节奏建立", "event": "固定每周一次「规划→执行」复盘" },
-        { "year": 2030, "type": "turning", "label": "关键决定", "event": "不再追求完整计划，追求下一小步" },
-        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "深夜还在工作，但不再焦虑" }
+        {
+          "year": 2026,
+          "type": "normal",
+          "label": "蓝图叠加",
+          "event": "写了第7版人生五年计划"
+        },
+        {
+          "year": 2027,
+          "type": "normal",
+          "label": "灵感爆发",
+          "event": "一个深夜想通了职业方向"
+        },
+        {
+          "year": 2028,
+          "type": "turning",
+          "label": "第一次重要转折",
+          "event": "把计划砍到只剩3条可执行项"
+        },
+        {
+          "year": 2029,
+          "type": "normal",
+          "label": "节奏建立",
+          "event": "固定每周一次「规划→执行」复盘"
+        },
+        {
+          "year": 2030,
+          "type": "turning",
+          "label": "关键决定",
+          "event": "不再追求完整计划，追求下一小步"
+        },
+        {
+          "year": 2031,
+          "type": "milestone",
+          "label": "人生新阶段",
+          "event": "深夜还在工作，但不再焦虑"
+        }
       ],
       "report": {
         "mainQuest": "让计划真正落地",
@@ -157,7 +271,24 @@
       },
       "verdict": {
         "quote": "你想得很清楚，只是白天总假装还没想清楚。",
-        "lifeTags": ["深夜清醒", "计划过剩", "执行迟到"]
+        "lifeTags": [
+          "终于开始",
+          "长期主义",
+          "慢热赢家"
+        ],
+        "portrait": [
+          "2031年的你，",
+          "没有成为最厉害的人。",
+          "却成为了最舒服的人。",
+          "你依然会想很多。",
+          "依然会犹豫。",
+          "但你终于学会把一些事情做完。",
+          "而不是一直准备。",
+          "真正改变人生的，",
+          "从来不是完美计划。",
+          "而是开始。"
+        ],
+        "reminder": "未来最大的变化，不是你变厉害了。而是终于开始。"
       },
       "shareQuotes": [
         "我的计划终于少了一页「理想」，多了一行「已完成」。",
@@ -198,12 +329,42 @@
         "futureOpportunity": "把「珍惜时间」变成「享受过程」"
       },
       "timeline": [
-        { "year": 2026, "type": "normal", "label": "计时人生", "event": "开始记录自己每天在做什么" },
-        { "year": 2027, "type": "normal", "label": "遗憾累积", "event": "复盘时发现「本可以更早」出现了17次" },
-        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "决定不再追「最优时机」" },
-        { "year": 2029, "type": "normal", "label": "节奏调整", "event": "学会了「够好就行」的时间哲学" },
-        { "year": 2030, "type": "turning", "label": "关键决定", "event": "删掉所有「等以后」的待办" },
-        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "终于觉得「现在」也值得" }
+        {
+          "year": 2026,
+          "type": "normal",
+          "label": "计时人生",
+          "event": "开始记录自己每天在做什么"
+        },
+        {
+          "year": 2027,
+          "type": "normal",
+          "label": "遗憾累积",
+          "event": "复盘时发现「本可以更早」出现了17次"
+        },
+        {
+          "year": 2028,
+          "type": "turning",
+          "label": "第一次重要转折",
+          "event": "决定不再追「最优时机」"
+        },
+        {
+          "year": 2029,
+          "type": "normal",
+          "label": "节奏调整",
+          "event": "学会了「够好就行」的时间哲学"
+        },
+        {
+          "year": 2030,
+          "type": "turning",
+          "label": "关键决定",
+          "event": "删掉所有「等以后」的待办"
+        },
+        {
+          "year": 2031,
+          "type": "milestone",
+          "label": "人生新阶段",
+          "event": "终于觉得「现在」也值得"
+        }
       ],
       "report": {
         "mainQuest": "与时间和解",
@@ -213,7 +374,19 @@
       },
       "verdict": {
         "quote": "你以为在等最好的时机，其实在等勇气。",
-        "lifeTags": ["时间敏感", "迟迟不出手", "后来才懂"]
+        "lifeTags": [
+          "长期主义",
+          "耐心复利",
+          "后劲很大"
+        ],
+        "portrait": [
+          "2031年的你，",
+          "终于看见长期积累的回报。",
+          "很多事情没有奇迹。",
+          "但坚持足够久以后，",
+          "看起来就像奇迹。"
+        ],
+        "reminder": "你没有走得更快。只是没有停下。"
       },
       "shareQuotes": [
         "我以为在等最好的时机，其实在等勇气。",
@@ -254,12 +427,42 @@
         "futureOpportunity": "把「说走就走」升级为「说做就做」"
       },
       "timeline": [
-        { "year": 2026, "type": "normal", "label": "试探边界", "event": "拒绝了第一份「稳定但无聊」的offer" },
-        { "year": 2027, "type": "normal", "label": "主动选择", "event": "尝试了一种全新生活方式" },
-        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "发现自由需要结构支撑" },
-        { "year": 2029, "type": "normal", "label": "建立规则", "event": "给自己定了3条「自由的前提」" },
-        { "year": 2030, "type": "turning", "label": "关键决定", "event": "不再逃离，开始建设" },
-        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "自由不再是逃避，而是选择" }
+        {
+          "year": 2026,
+          "type": "normal",
+          "label": "试探边界",
+          "event": "拒绝了第一份「稳定但无聊」的offer"
+        },
+        {
+          "year": 2027,
+          "type": "normal",
+          "label": "主动选择",
+          "event": "尝试了一种全新生活方式"
+        },
+        {
+          "year": 2028,
+          "type": "turning",
+          "label": "第一次重要转折",
+          "event": "发现自由需要结构支撑"
+        },
+        {
+          "year": 2029,
+          "type": "normal",
+          "label": "建立规则",
+          "event": "给自己定了3条「自由的前提」"
+        },
+        {
+          "year": 2030,
+          "type": "turning",
+          "label": "关键决定",
+          "event": "不再逃离，开始建设"
+        },
+        {
+          "year": 2031,
+          "type": "milestone",
+          "label": "人生新阶段",
+          "event": "自由不再是逃避，而是选择"
+        }
       ],
       "report": {
         "mainQuest": "找到不牺牲自由的成长方式",
@@ -269,7 +472,19 @@
       },
       "verdict": {
         "quote": "你不是不想稳定，是不想被别人的稳定定义。",
-        "lifeTags": ["自由至上", "换过跑道", "终于落地"]
+        "lifeTags": [
+          "自由优先",
+          "人生自主权",
+          "不被定义"
+        ],
+        "portrait": [
+          "2031年的你，",
+          "没有成为别人羡慕的人。",
+          "却成为了自己喜欢的人。",
+          "你赚的钱未必最多。",
+          "但时间终于属于自己。"
+        ],
+        "reminder": "自由不是离开所有束缚。而是拥有选择权。"
       },
       "shareQuotes": [
         "自由不是逃离一切，是选择什么值得留下。",
@@ -310,12 +525,42 @@
         "futureOpportunity": "选定一条路，并允许自己不再回头看"
       },
       "timeline": [
-        { "year": 2026, "type": "normal", "label": "多线人生", "event": "同时在脑子里过了4种人生版本" },
-        { "year": 2027, "type": "normal", "label": "反复假设", "event": "「如果当初」出现了无数次" },
-        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "决定不再模拟，开始活一种" },
-        { "year": 2029, "type": "normal", "label": "接受局限", "event": "承认没有「最优解」" },
-        { "year": 2030, "type": "turning", "label": "关键决定", "event": "对平行宇宙里的自己说了再见" },
-        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "终于觉得这一条时间线也不错" }
+        {
+          "year": 2026,
+          "type": "normal",
+          "label": "多线人生",
+          "event": "同时在脑子里过了4种人生版本"
+        },
+        {
+          "year": 2027,
+          "type": "normal",
+          "label": "反复假设",
+          "event": "「如果当初」出现了无数次"
+        },
+        {
+          "year": 2028,
+          "type": "turning",
+          "label": "第一次重要转折",
+          "event": "决定不再模拟，开始活一种"
+        },
+        {
+          "year": 2029,
+          "type": "normal",
+          "label": "接受局限",
+          "event": "承认没有「最优解」"
+        },
+        {
+          "year": 2030,
+          "type": "turning",
+          "label": "关键决定",
+          "event": "对平行宇宙里的自己说了再见"
+        },
+        {
+          "year": 2031,
+          "type": "milestone",
+          "label": "人生新阶段",
+          "event": "终于觉得这一条时间线也不错"
+        }
       ],
       "report": {
         "mainQuest": "停止过别人的生活，开始过自己的",
@@ -325,7 +570,22 @@
       },
       "verdict": {
         "quote": "你不是选错了，是从不认为自己选对了。",
-        "lifeTags": ["如果当初", "多线人生", "慢慢和解"]
+        "lifeTags": [
+          "方向太多",
+          "另一种人生",
+          "停止内耗"
+        ],
+        "portrait": [
+          "2031年的你，",
+          "依然会好奇另一种人生。",
+          "但已经不再焦虑。",
+          "你终于接受：",
+          "人生没有唯一正确答案。",
+          "那些没走过的路，",
+          "不再是遗憾。",
+          "而只是风景。"
+        ],
+        "reminder": "你最终拥有的，不是最好的选择。而是最坚定的选择。"
       },
       "shareQuotes": [
         "我以为错过的是机会，其实是勇气。",
@@ -350,8 +610,14 @@
       "primaryDimension": "M",
       "secondaryDimension": "A",
       "matchRule": {
-        "primary": { "dim": "M", "min": 60 },
-        "secondary": { "dim": "A", "max": 40 },
+        "primary": {
+          "dim": "M",
+          "min": 60
+        },
+        "secondary": {
+          "dim": "A",
+          "max": 40
+        },
         "description": "高动能 + 低行动"
       },
       "tagline": "看得太远，走得不够快",
@@ -371,12 +637,42 @@
         "futureOpportunity": "把观察笔记变成第一个行动"
       },
       "timeline": [
-        { "year": 2026, "type": "normal", "label": "持续观察", "event": "看懂了身边所有人的路，除了自己的" },
-        { "year": 2027, "type": "normal", "label": "分析过载", "event": "列了利弊清单，却没做选择" },
-        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "有人推了你一把，你才发现没那么可怕" },
-        { "year": 2029, "type": "normal", "label": "小步验证", "event": "开始用「7天实验」代替「完美计划」" },
-        { "year": 2030, "type": "turning", "label": "关键决定", "event": "不再等「想明白」，先「做起来」" },
-        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "终于从看台走下来了" }
+        {
+          "year": 2026,
+          "type": "normal",
+          "label": "持续观察",
+          "event": "看懂了身边所有人的路，除了自己的"
+        },
+        {
+          "year": 2027,
+          "type": "normal",
+          "label": "分析过载",
+          "event": "列了利弊清单，却没做选择"
+        },
+        {
+          "year": 2028,
+          "type": "turning",
+          "label": "第一次重要转折",
+          "event": "有人推了你一把，你才发现没那么可怕"
+        },
+        {
+          "year": 2029,
+          "type": "normal",
+          "label": "小步验证",
+          "event": "开始用「7天实验」代替「完美计划」"
+        },
+        {
+          "year": 2030,
+          "type": "turning",
+          "label": "关键决定",
+          "event": "不再等「想明白」，先「做起来」"
+        },
+        {
+          "year": 2031,
+          "type": "milestone",
+          "label": "人生新阶段",
+          "event": "终于从看台走下来了"
+        }
       ],
       "report": {
         "mainQuest": "从旁观者变成参与者",
@@ -386,7 +682,20 @@
       },
       "verdict": {
         "quote": "你什么都看得清，就是迟迟不肯下场。",
-        "lifeTags": ["旁观者", "分析过载", "终于迈出"]
+        "lifeTags": [
+          "人生体验派",
+          "故事收集者",
+          "不走直线"
+        ],
+        "portrait": [
+          "2031年的你，",
+          "经历的事情远比计划的多。",
+          "你的人生不像简历。",
+          "更像小说。",
+          "而那些绕远的路，",
+          "最后都变成了故事。"
+        ],
+        "reminder": "你最大的财富，是经历本身。"
       },
       "shareQuotes": [
         "我看懂了太多道理，终于开始懂自己。",
@@ -427,12 +736,42 @@
         "futureOpportunity": "把赌的勇气，用在长期主义上"
       },
       "timeline": [
-        { "year": 2026, "type": "normal", "label": "大胆尝试", "event": "做了一个所有人都说「太冒险」的决定" },
-        { "year": 2027, "type": "normal", "label": "跌倒爬起", "event": "失败了一次，但没有退场" },
-        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "发现冒险需要节奏，不是蛮干" },
-        { "year": 2029, "type": "normal", "label": "精准下注", "event": "开始只赌自己真正相信的事" },
-        { "year": 2030, "type": "turning", "label": "关键决定", "event": "留下一个长期项目，不再全面开花" },
-        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "依然敢赌，但不再拿人生当筹码" }
+        {
+          "year": 2026,
+          "type": "normal",
+          "label": "大胆尝试",
+          "event": "做了一个所有人都说「太冒险」的决定"
+        },
+        {
+          "year": 2027,
+          "type": "normal",
+          "label": "跌倒爬起",
+          "event": "失败了一次，但没有退场"
+        },
+        {
+          "year": 2028,
+          "type": "turning",
+          "label": "第一次重要转折",
+          "event": "发现冒险需要节奏，不是蛮干"
+        },
+        {
+          "year": 2029,
+          "type": "normal",
+          "label": "精准下注",
+          "event": "开始只赌自己真正相信的事"
+        },
+        {
+          "year": 2030,
+          "type": "turning",
+          "label": "关键决定",
+          "event": "留下一个长期项目，不再全面开花"
+        },
+        {
+          "year": 2031,
+          "type": "milestone",
+          "label": "人生新阶段",
+          "event": "依然敢赌，但不再拿人生当筹码"
+        }
       ],
       "report": {
         "mainQuest": "把冒险变成可持续的人生策略",
@@ -442,7 +781,20 @@
       },
       "verdict": {
         "quote": "你怕的不是失败，是从来没为自己赌过一次。",
-        "lifeTags": ["敢赌敢输", "跌倒爬起", "更会下注"]
+        "lifeTags": [
+          "行动力",
+          "边走边看",
+          "先出发"
+        ],
+        "portrait": [
+          "2031年的你，",
+          "最大的变化不是成功。",
+          "而是敢。",
+          "你做过很多错误决定。",
+          "幸运的是，",
+          "你做得足够多。"
+        ],
+        "reminder": "人生从来不是想明白后开始。而是开始后才想明白。"
       },
       "shareQuotes": [
         "我赌的不是成功，是不再后悔。",
