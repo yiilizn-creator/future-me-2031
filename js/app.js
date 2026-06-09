@@ -3,6 +3,9 @@ import { createEngine } from './engine.js';
 
 const RESULT_SCREENS = ['result-identity', 'result-share'];
 const TOTAL_QUESTIONS = QUESTIONS.length;
+const LEAK_TRIGGER_COUNT = 6;
+const LEAK_SCREENS = ['future-leak-loading', 'future-leak'];
+const LEGACY_LEAK_SCREENS = ['future-leak-scan', 'future-leak-os'];
 const POST_RESULT_SCREENS = ['dna', 'result-identity', 'result-share'];
 const LEGACY_RESULT_SCREENS = [
   'result-timeline',
@@ -23,6 +26,8 @@ const DNA_BLOCKS = 10;
 
 const app = document.getElementById('app');
 let introTimer = null;
+let leakFlowTimer = null;
+let leakAnimTimer = null;
 let quizSubmitting = false;
 
 const state = {
@@ -36,6 +41,11 @@ const state = {
   undoTimer: null,
   introLineIndex: 0,
   introLines: null,
+  futureLeakSeen: false,
+  futureLeak: null,
+  leakLineIndex: -1,
+  leakShowButton: false,
+  leakShownAt: 0,
 };
 
 let engine = null;
@@ -43,6 +53,7 @@ let DIMS = [];
 let getDimLabel = (d) => d;
 let createSessionId = () => '';
 let computeResult = () => null;
+let computeFutureLeak = () => null;
 let pseudoIntroStats = () => ({});
 
 async function bootstrap() {
@@ -50,17 +61,19 @@ async function bootstrap() {
     sessionStorage.removeItem('future-me-session');
   }
 
-  const [answerMap, scriptsData, universeReportData] = await Promise.all([
+  const [answerMap, scriptsData, universeReportData, futureLeakData] = await Promise.all([
     fetch('./data/answerMap.json').then((r) => r.json()),
     fetch('./data/scripts.json').then((r) => r.json()),
     fetch('./data/universeReport.json').then((r) => r.json()),
+    fetch('./data/futureLeak.json').then((r) => r.json()),
   ]);
 
-  engine = createEngine(answerMap, scriptsData, universeReportData);
+  engine = createEngine(answerMap, scriptsData, universeReportData, futureLeakData);
   DIMS = engine.DIMS;
   getDimLabel = engine.getDimLabel;
   createSessionId = engine.createSessionId;
   computeResult = engine.computeResult;
+  computeFutureLeak = engine.computeFutureLeak;
   pseudoIntroStats = engine.pseudoIntroStats;
 
   state.sessionId = createSessionId();
@@ -94,8 +107,18 @@ function saveSession() {
       answers: state.answers,
       screen: state.screen,
       shared: state.shared,
+      futureLeakSeen: state.futureLeakSeen,
+      futureLeak: state.futureLeak,
+      leakLineIndex: state.leakLineIndex,
+      leakShowButton: state.leakShowButton,
     })
   );
+}
+
+function trackEvent(name, payload = {}) {
+  if (typeof console !== 'undefined' && console.debug) {
+    console.debug('[analytics]', name, payload);
+  }
 }
 
 function getFirstUnansweredIndex() {
@@ -124,7 +147,29 @@ function loadSession() {
     state.sessionId = data.sessionId ?? state.sessionId;
     state.answers = data.answers;
     state.shared = data.shared ?? false;
+    state.futureLeakSeen = data.futureLeakSeen ?? false;
+    state.futureLeak = data.futureLeak ?? null;
+    state.leakLineIndex = data.leakLineIndex ?? -1;
+    state.leakShowButton = data.leakShowButton ?? false;
     syncQuestionIndex();
+
+    if (!state.futureLeakSeen && answerCount > LEAK_TRIGGER_COUNT) {
+      state.futureLeakSeen = true;
+      state.futureLeak = computeFutureLeak(state.answers, state.sessionId);
+    }
+
+    if (LEAK_SCREENS.includes(data.screen) || LEGACY_LEAK_SCREENS.includes(data.screen)) {
+      if (!state.futureLeak && answerCount >= LEAK_TRIGGER_COUNT) {
+        state.futureLeak = computeFutureLeak(state.answers, state.sessionId);
+      }
+      state.screen = 'future-leak';
+      state.leakLineIndex = Math.max(
+        state.leakLineIndex,
+        (state.futureLeak?.lines?.length ?? 1) - 1
+      );
+      state.leakShowButton = true;
+      state.futureLeakSeen = true;
+    }
 
     if (answerCount === TOTAL_QUESTIONS) {
       state.result = computeResult(state.answers, state.sessionId);
@@ -195,7 +240,7 @@ function renderIntro() {
   const lines = state.introLines ?? getIntroLines();
 
   return `
-    <div class="screen intro-screen" data-screen="intro">
+    <div class="screen intro-screen verdict-pixel" data-screen="intro">
       <h1 class="intro-title verdict-pixel">开启我的2031</h1>
       <div class="intro-lines">
         ${lines
@@ -230,7 +275,7 @@ function renderQuiz() {
   }).join('');
 
   return `
-    <div class="screen screen-quiz" data-screen="quiz">
+    <div class="screen screen-quiz verdict-pixel" data-screen="quiz">
       <div class="quiz-header">
         ${state.questionIndex > 0 ? '<button class="quiz-back" id="btn-back" type="button">← 上一题</button>' : '<div class="quiz-back-placeholder"></div>'}
         <div class="progress-panel">
@@ -272,9 +317,40 @@ function renderQuiz() {
 
 function renderDna() {
   return `
-    <div class="screen screen-verdict dna-screen" data-screen="dna">
+    <div class="screen screen-verdict dna-screen verdict-pixel" data-screen="dna">
       <p class="verdict-from">来自2031年的自己</p>
       <p class="dna-loading">Future DNA Analysis…</p>
+    </div>
+  `;
+}
+
+function renderFutureLeakLoading() {
+  return `
+    <div class="screen screen-leak screen-leak-loading verdict-pixel" data-screen="future-leak-loading">
+      <p class="leak-loading-text verdict-pixel">正在扫描未来...</p>
+      <div class="leak-scan-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+        <div class="leak-scan-fill"></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderFutureLeak() {
+  const leak = state.futureLeak;
+  const lines = leak?.lines ?? [];
+  return `
+    <div class="screen screen-leak screen-leak-reveal verdict-pixel" data-screen="future-leak">
+      <p class="leak-archive">Future Archive #2031</p>
+      <div class="leak-lines">
+        ${lines
+          .map(
+            (line, i) =>
+              `<p class="leak-line ${i <= state.leakLineIndex ? 'visible' : ''}">${escapeHtml(line)}</p>`
+          )
+          .join('')}
+      </div>
+      <p class="leak-confidence ${state.leakLineIndex >= 0 ? 'visible' : ''}">Confidence ${leak?.confidence ?? 81}%</p>
+      <button class="btn btn-primary btn-block leak-continue ${state.leakShowButton ? 'visible' : ''}" id="btn-leak-continue" type="button">继续查看未来 →</button>
     </div>
   `;
 }
@@ -291,7 +367,7 @@ function renderResultIdentity() {
   const s = state.result.scriptA;
   const dna = state.result.dna;
   return `
-    <div class="screen screen-verdict screen-identity" data-screen="result-identity">
+    <div class="screen screen-verdict screen-identity verdict-pixel" data-screen="result-identity">
       ${renderResultNav('result-identity')}
       <div class="verdict-body">
         <p class="verdict-from">来自2031年的自己</p>
@@ -311,6 +387,7 @@ function renderResultShare() {
   return `
     <div class="screen screen-verdict screen-share verdict-pixel" data-screen="result-share">
       ${renderResultNav('result-share')}
+      <p class="share-header verdict-pixel">来自2031的自己 Future me</p>
       <div class="verdict-body verdict-body-share" id="poster-canvas">
         <h1 class="share-identity verdict-pixel">${escapeHtml(s.name)}</h1>
         <p class="share-quote verdict-pixel">${formatCommaBreak(r.shareQuote)}</p>
@@ -374,6 +451,12 @@ function render() {
     case 'dna':
       html = renderDna();
       break;
+    case 'future-leak-loading':
+      html = renderFutureLeakLoading();
+      break;
+    case 'future-leak':
+      html = renderFutureLeak();
+      break;
     case 'result-identity':
       html = renderResultIdentity();
       break;
@@ -383,6 +466,12 @@ function render() {
   }
   app.innerHTML = html;
   bindEvents();
+
+  if (state.screen === 'future-leak' && !state.leakShowButton && state.leakLineIndex < 0) {
+    runLeakLineAnimation();
+  } else if (state.screen === 'future-leak') {
+    syncLeakDom();
+  }
 }
 
 function selectAnswer(key) {
@@ -396,7 +485,14 @@ function selectAnswer(key) {
   state.selectedKey = null;
   saveSession();
 
-  if (Object.keys(state.answers).length >= TOTAL_QUESTIONS) {
+  const answeredCount = Object.keys(state.answers).length;
+
+  if (!state.futureLeakSeen && answeredCount === LEAK_TRIGGER_COUNT) {
+    startFutureLeak();
+    return;
+  }
+
+  if (answeredCount >= TOTAL_QUESTIONS) {
     finishQuiz();
     return;
   }
@@ -462,7 +558,9 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
   if (line) ctx.fillText(line, x, offsetY);
 }
 
-function savePoster() {
+const PIXEL_FONT_FAMILY = 'Zpix, "Press Start 2P", monospace';
+
+async function savePoster() {
   const r = state.result;
   const s = r.scriptA;
   const tags = r.lifeTags ?? [];
@@ -471,6 +569,16 @@ function savePoster() {
   canvas.height = 1920;
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
+
+  try {
+    await Promise.all([
+      document.fonts.load('22px Zpix'),
+      document.fonts.load('32px Zpix'),
+      document.fonts.load('56px Zpix'),
+    ]);
+  } catch {
+    /* 字体未加载时回退到 monospace */
+  }
 
   const grad = ctx.createLinearGradient(0, 0, 1080, 500);
   grad.addColorStop(0, 'rgba(138,93,255,0.22)');
@@ -482,16 +590,20 @@ function savePoster() {
 
   ctx.textAlign = 'center';
 
+  ctx.fillStyle = 'rgba(238,242,255,0.55)';
+  ctx.font = `22px ${PIXEL_FONT_FAMILY}`;
+  ctx.fillText('来自2031的自己 Future me', 540, 120);
+
   ctx.fillStyle = '#eef2ff';
-  ctx.font = 'bold 56px monospace';
+  ctx.font = `56px ${PIXEL_FONT_FAMILY}`;
   ctx.fillText(s.name, 540, 280);
 
   ctx.fillStyle = '#eef2ff';
-  ctx.font = '32px monospace';
+  ctx.font = `32px ${PIXEL_FONT_FAMILY}`;
   wrapText(ctx, r.shareQuote, 540, 480, 920, 52);
 
   ctx.fillStyle = 'rgba(238,242,255,0.45)';
-  ctx.font = '22px monospace';
+  ctx.font = `22px ${PIXEL_FONT_FAMILY}`;
   let tagY = 900;
   tags.forEach((tag) => {
     ctx.fillText(tag, 540, tagY);
@@ -499,7 +611,7 @@ function savePoster() {
   });
 
   ctx.fillStyle = 'rgba(238,242,255,0.3)';
-  ctx.font = '18px monospace';
+  ctx.font = `18px ${PIXEL_FONT_FAMILY}`;
   ctx.fillText('Future Me 2031', 540, 1180);
 
   const link = document.createElement('a');
@@ -514,6 +626,85 @@ function stopIntroAnimation() {
     clearInterval(introTimer);
     introTimer = null;
   }
+}
+
+function stopLeakFlow() {
+  if (leakFlowTimer) {
+    clearTimeout(leakFlowTimer);
+    leakFlowTimer = null;
+  }
+}
+
+function stopLeakAnimation() {
+  if (leakAnimTimer) {
+    clearInterval(leakAnimTimer);
+    leakAnimTimer = null;
+  }
+}
+
+function syncLeakDom() {
+  const screen = document.querySelector('[data-screen="future-leak"]');
+  if (!screen) return;
+
+  screen.querySelectorAll('.leak-line').forEach((el, i) => {
+    el.classList.toggle('visible', i <= state.leakLineIndex);
+  });
+  screen.querySelector('.leak-confidence')?.classList.toggle('visible', state.leakLineIndex >= 0);
+  document.getElementById('btn-leak-continue')?.classList.toggle('visible', state.leakShowButton);
+}
+
+function runLeakLineAnimation() {
+  if (!state.futureLeak?.lines?.length) return;
+
+  stopLeakAnimation();
+  state.leakLineIndex = -1;
+  state.leakShowButton = false;
+  syncLeakDom();
+  state.leakShownAt = Date.now();
+  trackEvent('future_leak_show', { patternId: state.futureLeak.patternId });
+
+  leakAnimTimer = setInterval(() => {
+    if (state.leakLineIndex < state.futureLeak.lines.length - 1) {
+      state.leakLineIndex++;
+      syncLeakDom();
+      saveSession();
+    } else {
+      stopLeakAnimation();
+      leakFlowTimer = setTimeout(() => {
+        state.leakShowButton = true;
+        syncLeakDom();
+        saveSession();
+      }, 1500);
+    }
+  }, 300);
+}
+
+function startFutureLeak() {
+  stopLeakFlow();
+  stopLeakAnimation();
+  state.futureLeak = computeFutureLeak(state.answers, state.sessionId);
+  state.futureLeakSeen = true;
+  state.leakLineIndex = -1;
+  state.leakShowButton = false;
+  saveSession();
+
+  setScreen('future-leak-loading');
+  leakFlowTimer = setTimeout(() => {
+    setScreen('future-leak');
+  }, 800);
+}
+
+function continueAfterLeak() {
+  const duration = state.leakShownAt ? Date.now() - state.leakShownAt : 0;
+  trackEvent('future_leak_continue', {
+    patternId: state.futureLeak?.patternId,
+    duration,
+  });
+  stopLeakFlow();
+  stopLeakAnimation();
+  state.questionIndex = getFirstUnansweredIndex();
+  saveSession();
+  setScreen('quiz');
 }
 
 function syncIntroDom() {
@@ -551,14 +742,22 @@ function runIntroAnimation() {
 function bindEvents() {
   document.getElementById('btn-start')?.addEventListener('click', () => {
     stopIntroAnimation();
+    stopLeakFlow();
+    stopLeakAnimation();
     quizSubmitting = false;
     state.questionIndex = 0;
     state.answers = {};
     state.result = null;
     state.shared = false;
     state.selectedKey = null;
+    state.futureLeakSeen = false;
+    state.futureLeak = null;
+    state.leakLineIndex = -1;
+    state.leakShowButton = false;
     setScreen('quiz');
   });
+
+  document.getElementById('btn-leak-continue')?.addEventListener('click', continueAfterLeak);
 
   document.getElementById('btn-back')?.addEventListener('click', () => {
     clearTimeout(state.undoTimer);
@@ -607,6 +806,8 @@ function bindEvents() {
   });
 
   document.getElementById('btn-restart')?.addEventListener('click', () => {
+    stopLeakFlow();
+    stopLeakAnimation();
     quizSubmitting = false;
     sessionStorage.removeItem('future-me-session');
     state.sessionId = createSessionId();
@@ -617,6 +818,10 @@ function bindEvents() {
     state.selectedKey = null;
     state.introLineIndex = 0;
     state.introLines = null;
+    state.futureLeakSeen = false;
+    state.futureLeak = null;
+    state.leakLineIndex = -1;
+    state.leakShowButton = false;
     setScreen('intro');
     runIntroAnimation();
   });
@@ -626,5 +831,5 @@ function bindEvents() {
 bootstrap().catch((err) => {
   console.error(err);
   app.innerHTML =
-    '<div class="screen"><p style="color:#ff6b6b;text-align:center">加载失败，请使用本地服务器运行（见 start.sh）</p></div>';
+    '<div class="screen verdict-pixel"><p class="load-error">加载失败，请使用本地服务器运行（见 start.sh）</p></div>';
 });

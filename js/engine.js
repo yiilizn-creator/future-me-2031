@@ -7,7 +7,7 @@ const DIM_LABELS = {
   C: '创造欲',
 };
 
-export function createEngine(answerMap, scriptsData, universeReportData) {
+export function createEngine(answerMap, scriptsData, universeReportData, futureLeakData) {
   const scripts = scriptsData.scripts;
   const scriptById = Object.fromEntries(scripts.map((s) => [s.id, s]));
   const scriptLookup = scriptsData.scriptLookup;
@@ -41,6 +41,76 @@ export function createEngine(answerMap, scriptsData, universeReportData) {
     return Object.fromEntries(
       DIMS.map((d) => [d, Math.round((raw[d] / maxRaw[d]) * 100)])
     );
+  }
+
+  function calcPartialDNA(answers, maxQuestion = 6) {
+    const raw = { M: 0, F: 0, A: 0, R: 0, C: 0 };
+    const maxRaw = { M: 0, F: 0, A: 0, R: 0, C: 0 };
+    const map = answerMap.answers;
+
+    for (let n = 1; n <= maxQuestion; n++) {
+      const q = `Q${n}`;
+      for (const d of DIMS) {
+        let qMax = 0;
+        for (const opt of ['A', 'B', 'C', 'D']) {
+          qMax = Math.max(qMax, map[q]?.[opt]?.[d] ?? 0);
+        }
+        maxRaw[d] += qMax;
+      }
+
+      const chosen = answers[q];
+      if (!chosen) continue;
+      const score = map[q]?.[chosen];
+      if (!score) continue;
+      for (const d of DIMS) {
+        raw[d] += score[d];
+      }
+    }
+
+    return Object.fromEntries(
+      DIMS.map((d) => [
+        d,
+        maxRaw[d] > 0 ? Math.round((raw[d] / maxRaw[d]) * 100) : 0,
+      ])
+    );
+  }
+
+  function matchLeakCondition(dna, cond) {
+    if (cond.avgOthers) {
+      const avg = (dna.F + dna.A + dna.R + dna.C) / 4;
+      if (cond.avgOthers.min !== undefined && avg < cond.avgOthers.min) return false;
+      if (cond.avgOthers.max !== undefined && avg > cond.avgOthers.max) return false;
+    }
+
+    for (const [dim, rule] of Object.entries(cond)) {
+      if (dim === 'avgOthers') continue;
+      const val = dna[dim];
+      if (rule.min !== undefined && val < rule.min) return false;
+      if (rule.max !== undefined && val > rule.max) return false;
+    }
+    return true;
+  }
+
+  function computeFutureLeak(answers, sessionId) {
+    const dna = calcPartialDNA(answers, futureLeakData.meta?.triggerAfter ?? 6);
+    let pattern = futureLeakData.universal;
+
+    for (const candidate of futureLeakData.patterns) {
+      if (matchLeakCondition(dna, candidate.conditions)) {
+        pattern = candidate;
+        break;
+      }
+    }
+
+    const confidence = 81 + (hashSeed(sessionId, 'leak') % 3);
+
+    return {
+      patternId: pattern.id,
+      patternName: pattern.name,
+      lines: pattern.lines,
+      dna,
+      confidence,
+    };
   }
 
   function sortedDims(dna) {
@@ -235,6 +305,7 @@ export function createEngine(answerMap, scriptsData, universeReportData) {
     createSessionId: () =>
       `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
     computeResult,
+    computeFutureLeak,
     pseudoIntroStats,
   };
 }
