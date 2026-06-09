@@ -75,7 +75,7 @@ export function createEngine(answerMap, scriptsData, universeReportData, futureL
     );
   }
 
-  function matchLeakCondition(dna, cond) {
+  function matchLeakCondition(dna, cond = {}) {
     if (cond.avgOthers) {
       const avg = (dna.F + dna.A + dna.R + dna.C) / 4;
       if (cond.avgOthers.min !== undefined && avg < cond.avgOthers.min) return false;
@@ -91,12 +91,47 @@ export function createEngine(answerMap, scriptsData, universeReportData, futureL
     return true;
   }
 
+  function matchLeakPattern(dna, sorted, pattern) {
+    const top1 = sorted[0];
+    const top2 = sorted[1];
+
+    if (pattern.primaryDim) {
+      if (top1[0] !== pattern.primaryDim) return false;
+      if (
+        pattern.dominanceMin !== undefined &&
+        top1[1] - top2[1] < pattern.dominanceMin
+      ) {
+        return false;
+      }
+    }
+
+    if (pattern.primaryPair) {
+      const topPair = sorted
+        .slice(0, 2)
+        .map(([dim]) => dim)
+        .sort()
+        .join(',');
+      const wantPair = [...pattern.primaryPair].sort().join(',');
+      if (topPair !== wantPair) return false;
+    }
+
+    if (pattern.balancedOthers) {
+      const others = [dna.F, dna.A, dna.R, dna.C];
+      const avg = others.reduce((sum, val) => sum + val, 0) / others.length;
+      const spread = Math.max(...others) - Math.min(...others);
+      if (spread > 22 || avg < 22 || avg > 58) return false;
+    }
+
+    return matchLeakCondition(dna, pattern.conditions ?? {});
+  }
+
   function computeFutureLeak(answers, sessionId) {
     const dna = calcPartialDNA(answers, futureLeakData.meta?.triggerAfter ?? 6);
+    const sorted = sortedDims(dna);
     let pattern = futureLeakData.universal;
 
     for (const candidate of futureLeakData.patterns) {
-      if (matchLeakCondition(dna, candidate.conditions)) {
+      if (matchLeakPattern(dna, sorted, candidate)) {
         pattern = candidate;
         break;
       }
