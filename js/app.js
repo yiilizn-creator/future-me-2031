@@ -749,8 +749,8 @@ function renderResultShare() {
   return `
     <div class="screen screen-verdict screen-share" data-screen="result-share">
       ${renderResultNav('result-share')}
-      <div id="share-capture-root" class="share-capture-root">
-        <div class="verdict-body verdict-body-share">
+      <div class="verdict-body verdict-body-share">
+        <div id="share-capture-root" class="share-capture-root">
           <p class="brand-eyebrow">${BRAND.observer}</p>
           ${
             poetry.hasPortrait
@@ -767,14 +767,14 @@ function renderResultShare() {
             ${tags.map((t) => `<span class="share-tag">${escapeHtml(t)}</span>`).join('')}
           </div>
         </div>
-      </div>
-      <div class="share-actions">
-        <button class="btn btn-primary btn-block" id="btn-share" type="button">分享给朋友</button>
-        <div class="actions-row">
-          <button class="btn btn-secondary btn-sm" id="btn-copy" type="button">复制未来</button>
-          <button class="btn btn-secondary btn-sm" id="btn-save" type="button">保存图片</button>
+        <div class="share-actions">
+          <button class="btn btn-primary btn-block" id="btn-share" type="button">分享给朋友</button>
+          <div class="actions-row">
+            <button class="btn btn-secondary btn-sm" id="btn-copy" type="button">复制未来</button>
+            <button class="btn btn-secondary btn-sm" id="btn-save" type="button">保存图片</button>
+          </div>
+          <button class="btn btn-ghost btn-block" id="btn-restart" type="button">重新查看</button>
         </div>
-        <button class="btn btn-ghost btn-block" id="btn-restart" type="button">重新查看</button>
       </div>
     </div>
   `;
