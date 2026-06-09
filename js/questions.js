@@ -1,0 +1,135 @@
+export const QUESTIONS = [
+  {
+    id: 'Q1',
+    section: '灵魂默认设置',
+    text: '如果人生是一款游戏，\n你最讨厌哪种提示？',
+    options: [
+      { key: 'A', text: '任务失败' },
+      { key: 'B', text: '时间不足' },
+      { key: 'C', text: '资源不足' },
+      { key: 'D', text: '无法返回上一步' },
+    ],
+  },
+  {
+    id: 'Q2',
+    section: '灵魂默认设置',
+    text: '神秘按钮出现，按下有 50% 概率改变人生。\n你会？',
+    options: [
+      { key: 'A', text: '立刻按' },
+      { key: 'B', text: '研究后按' },
+      { key: 'C', text: '让别人先按' },
+      { key: 'D', text: '直接离开' },
+    ],
+  },
+  {
+    id: 'Q3',
+    section: '灵魂默认设置',
+    text: '如果删除一种感觉。\n你会删掉？',
+    options: [
+      { key: 'A', text: '后悔' },
+      { key: 'B', text: '焦虑' },
+      { key: 'C', text: '孤独' },
+      { key: 'D', text: '嫉妒' },
+    ],
+  },
+  {
+    id: 'Q4',
+    section: '灵魂默认设置',
+    text: '宇宙送你一个能力。\n只能选一个。',
+    options: [
+      { key: 'A', text: '永远知道下一步' },
+      { key: 'B', text: '永远不会失败' },
+      { key: 'C', text: '永远有人支持你' },
+      { key: 'D', text: '永远充满热情' },
+    ],
+  },
+  {
+    id: 'Q5',
+    section: '命运漏洞检测',
+    text: '你的人生像哪个浏览器标签页？',
+    options: [
+      { key: 'A', text: '开了 100 个没关' },
+      { key: 'B', text: '只开一个' },
+      { key: 'C', text: '一直忘记关闭' },
+      { key: 'D', text: '经常崩溃重启' },
+    ],
+  },
+  {
+    id: 'Q6',
+    section: '命运漏洞检测',
+    text: '如果你的拖延症拍成电影。\n电影名会是？',
+    options: [
+      { key: 'A', text: '《明天开始》' },
+      { key: 'B', text: '《还没准备好》' },
+      { key: 'C', text: '《再等等》' },
+      { key: 'D', text: '《差不多得了》' },
+    ],
+  },
+  {
+    id: 'Q7',
+    section: '命运漏洞检测',
+    text: '人生最难的一步是？',
+    options: [
+      { key: 'A', text: '开始' },
+      { key: 'B', text: '坚持' },
+      { key: 'C', text: '放弃' },
+      { key: 'D', text: '重新开始' },
+    ],
+  },
+  {
+    id: 'Q8',
+    section: '命运漏洞检测',
+    text: '如果失败不会被任何人知道。\n你会尝试？',
+    options: [
+      { key: 'A', text: '创业' },
+      { key: 'B', text: '创作' },
+      { key: 'C', text: '公开表达' },
+      { key: 'D', text: '换一种人生' },
+    ],
+  },
+  {
+    id: 'Q9',
+    section: '平行宇宙',
+    text: '四扇门只能进一个。',
+    options: [
+      { key: 'A', text: '财富' },
+      { key: 'B', text: '自由' },
+      { key: 'C', text: '影响力' },
+      { key: 'D', text: '爱情' },
+    ],
+  },
+  {
+    id: 'Q10',
+    section: '平行宇宙',
+    text: '平行宇宙里的你发来一句话。\n你最想听见？',
+    options: [
+      { key: 'A', text: '你坚持下来了' },
+      { key: 'B', text: '你赌对了' },
+      { key: 'C', text: '你终于快乐了' },
+      { key: 'D', text: '你成为自己了' },
+    ],
+  },
+  {
+    id: 'Q11',
+    section: '平行宇宙',
+    text: '如果人生有撤回键。\n你最想撤回？',
+    options: [
+      { key: 'A', text: '一次错过' },
+      { key: 'B', text: '一次选择' },
+      { key: 'C', text: '一个关系' },
+      { key: 'D', text: '一段时间' },
+    ],
+  },
+  {
+    id: 'Q12',
+    section: '平行宇宙',
+    text: '2031 年的你突然出现。\n他说：',
+    weighted: true,
+    options: [
+      { key: 'A', text: '早点开始' },
+      { key: 'B', text: '别那么急' },
+      { key: 'C', text: '相信自己' },
+      { key: 'D', text: '换条路试试' },
+    ],
+  },
+];

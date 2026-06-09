@@ -1,0 +1,478 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "locale": "zh-CN",
+    "targetYear": 2031,
+    "baseYear": 2026
+  },
+  "scripts": [
+    {
+      "id": "archaeologist",
+      "order": 1,
+      "name": "未来考古学家",
+      "pairKey": "C_R",
+      "primaryDimension": "C",
+      "secondaryDimension": "R",
+      "tagline": "总在挖掘未来，却被过去绊住脚",
+      "identity": {
+        "yearLabel": "2031",
+        "roleLabel": "未来人格",
+        "description": [
+          "你总是在思考未来。",
+          "却经常被过去绊住脚。",
+          "奇怪的是，你从来没有真正放弃过自己。"
+        ]
+      },
+      "dna": {
+        "profileHint": "高创造 + 高遗憾敏感",
+        "shadowDimension": "A",
+        "growthResistance": "想做的太多，真正开始的太少",
+        "futureOpportunity": "把「收藏」变成「出土」——选一个灵感深挖"
+      },
+      "timeline": [
+        { "year": 2026, "type": "normal", "label": "继续囤积灵感", "event": "又收藏了47个「以后要做」的想法" },
+        { "year": 2027, "type": "normal", "label": "反复复盘", "event": "第三次重写那份没发出去的计划" },
+        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "终于把一个想法做到了60%" },
+        { "year": 2029, "type": "normal", "label": "深度挖掘", "event": "发现自己擅长「把模糊变清晰」" },
+        { "year": 2030, "type": "turning", "label": "关键决定", "event": "删掉了80%的收藏夹，只留下3个项目" },
+        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "成为那个「能讲清自己从哪来」的人" }
+      ],
+      "report": {
+        "mainQuest": "终于开始做那些拖延三年的事",
+        "maxGrowth": "停止等待最佳时机",
+        "maxRegret": "收藏了太多灵感，却极少深挖",
+        "universeNote": "已读。回复较慢。但你这次真的回消息了。"
+      },
+      "verdict": {
+        "quote": "收藏了那么多未来，却很少真正抵达。",
+        "lifeTags": ["灵感收藏家", "迟迟未动", "其实没放弃"]
+      },
+      "shareQuotes": [
+        "五年后的我最大的成就，不是成功，是终于开始。",
+        "我的问题从来不是没方向，是方向太多。",
+        "人生最大的转折，不是机会来了，而是我终于点了开始。"
+      ],
+      "poster": {
+        "defaultQuoteIndex": 0,
+        "footer": "来自2031年的自己 · Future Me"
+      },
+      "parallelContrast": {
+        "prefix": "若你少想一点、多做一点",
+        "targetScriptId": "bookmark_entrepreneur",
+        "suffix": "2031年的你可能完全不同"
+      }
+    },
+    {
+      "id": "bookmark_entrepreneur",
+      "order": 2,
+      "name": "收藏夹企业家",
+      "pairKey": "C_A",
+      "primaryDimension": "C",
+      "secondaryDimension": "A",
+      "tagline": "把灵感变成项目，把项目变成习惯",
+      "identity": {
+        "yearLabel": "2031",
+        "roleLabel": "未来人格",
+        "description": [
+          "你的收藏夹不是坟墓。",
+          "是仓库。",
+          "2031年的你，终于学会了「先上线再完美」。"
+        ]
+      },
+      "dna": {
+        "profileHint": "高创造 + 高行动",
+        "shadowDimension": "R",
+        "growthResistance": "启动很快，但很少复盘",
+        "futureOpportunity": "把一个副业做成可持续现金流"
+      },
+      "timeline": [
+        { "year": 2026, "type": "normal", "label": "疯狂试错", "event": "同时开了4个小项目" },
+        { "year": 2027, "type": "normal", "label": "快速迭代", "event": "第3个项目开始有人付费" },
+        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "关掉3个，All in 那1个" },
+        { "year": 2029, "type": "normal", "label": "规模扩大", "event": "从「我一个人」变成「小团队」" },
+        { "year": 2030, "type": "turning", "label": "关键决定", "event": "接受不完美，但接受收入" },
+        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "不再自称「还在准备」，改称「在做」" }
+      ],
+      "report": {
+        "mainQuest": "把想法变成能交付的东西",
+        "maxGrowth": "学会了「做完」比「做好」更重要",
+        "maxRegret": "早期同时开太多坑，浪费了一些好运",
+        "universeNote": "收到。你这次没甩锅给「时机不对」。好评。"
+      },
+      "verdict": {
+        "quote": "你不是没想法，是习惯把上线日期设成明天。",
+        "lifeTags": ["先上线再说", "收藏夹创业", "终于敢交付"]
+      },
+      "shareQuotes": [
+        "未来没有奖励我更聪明，它奖励我终于行动。",
+        "我的收藏夹终于少了一个「以后再看」。",
+        "2031年的我：不是更忙了，是更敢了。"
+      ],
+      "poster": {
+        "defaultQuoteIndex": 0,
+        "footer": "来自2031年的自己 · Future Me"
+      },
+      "parallelContrast": {
+        "prefix": "若你慢一点、想深一点",
+        "targetScriptId": "archaeologist",
+        "suffix": "你可能会成为另一个自己"
+      }
+    },
+    {
+      "id": "midnight_planner",
+      "order": 3,
+      "name": "深夜规划师",
+      "pairKey": "M_C",
+      "primaryDimension": "M",
+      "secondaryDimension": "C",
+      "tagline": "凌晨两点的你，比白天更接近真相",
+      "identity": {
+        "yearLabel": "2031",
+        "roleLabel": "未来人格",
+        "description": [
+          "你擅长在深夜看清人生路线。",
+          "白天却总被琐事打散。",
+          "2031年的你，终于把规划写进了日历。"
+        ]
+      },
+      "dna": {
+        "profileHint": "高动能 + 高创造",
+        "shadowDimension": "A",
+        "growthResistance": "计划精美，执行延迟",
+        "futureOpportunity": "把「深夜洞察」变成「晨间第一个动作」"
+      },
+      "timeline": [
+        { "year": 2026, "type": "normal", "label": "蓝图叠加", "event": "写了第7版人生五年计划" },
+        { "year": 2027, "type": "normal", "label": "灵感爆发", "event": "一个深夜想通了职业方向" },
+        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "把计划砍到只剩3条可执行项" },
+        { "year": 2029, "type": "normal", "label": "节奏建立", "event": "固定每周一次「规划→执行」复盘" },
+        { "year": 2030, "type": "turning", "label": "关键决定", "event": "不再追求完整计划，追求下一小步" },
+        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "深夜还在工作，但不再焦虑" }
+      ],
+      "report": {
+        "mainQuest": "让计划真正落地",
+        "maxGrowth": "接受「不完美的进度」也是进度",
+        "maxRegret": "太多计划死在「明天开始」",
+        "universeNote": "检测到：你的脑内服务器从未宕机，但手脚偶尔离线。"
+      },
+      "verdict": {
+        "quote": "你想得很清楚，只是白天总假装还没想清楚。",
+        "lifeTags": ["深夜清醒", "计划过剩", "执行迟到"]
+      },
+      "shareQuotes": [
+        "我的计划终于少了一页「理想」，多了一行「已完成」。",
+        "深夜想明白的事，白天也要敢做。",
+        "2031年的我：不是不规划了，是只规划能做的事。"
+      ],
+      "poster": {
+        "defaultQuoteIndex": 1,
+        "footer": "来自2031年的自己 · Future Me"
+      },
+      "parallelContrast": {
+        "prefix": "若你少一点规划、多一点放手",
+        "targetScriptId": "fate_observer",
+        "suffix": "你会活得更松弛"
+      }
+    },
+    {
+      "id": "time_collector",
+      "order": 4,
+      "name": "时间收藏家",
+      "pairKey": "M_R",
+      "primaryDimension": "M",
+      "secondaryDimension": "R",
+      "tagline": "收集时间的人，最后都学会了珍惜当下",
+      "identity": {
+        "yearLabel": "2031",
+        "roleLabel": "未来人格",
+        "description": [
+          "你对时间有种近乎执着的敏感。",
+          "错过的每一秒都会被记住。",
+          "好在你终于不再和时间对抗。"
+        ]
+      },
+      "dna": {
+        "profileHint": "高动能 + 高遗憾敏感",
+        "shadowDimension": "F",
+        "growthResistance": "怕浪费时间，反而在犹豫中浪费更多",
+        "futureOpportunity": "把「珍惜时间」变成「享受过程」"
+      },
+      "timeline": [
+        { "year": 2026, "type": "normal", "label": "计时人生", "event": "开始记录自己每天在做什么" },
+        { "year": 2027, "type": "normal", "label": "遗憾累积", "event": "复盘时发现「本可以更早」出现了17次" },
+        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "决定不再追「最优时机」" },
+        { "year": 2029, "type": "normal", "label": "节奏调整", "event": "学会了「够好就行」的时间哲学" },
+        { "year": 2030, "type": "turning", "label": "关键决定", "event": "删掉所有「等以后」的待办" },
+        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "终于觉得「现在」也值得" }
+      ],
+      "report": {
+        "mainQuest": "与时间和解",
+        "maxGrowth": "不再把当下当作「过渡期」",
+        "maxRegret": "曾经觉得永远来得及，其实没有",
+        "universeNote": "时间线已同步。你这次没说「等我准备好了」。"
+      },
+      "verdict": {
+        "quote": "你以为在等最好的时机，其实在等勇气。",
+        "lifeTags": ["时间敏感", "迟迟不出手", "后来才懂"]
+      },
+      "shareQuotes": [
+        "我以为在等最好的时机，其实在等勇气。",
+        "最大的遗憾，是以为以后还有时间。",
+        "2031年的我：不再赶时间了，开始过日子了。"
+      ],
+      "poster": {
+        "defaultQuoteIndex": 0,
+        "footer": "来自2031年的自己 · Future Me"
+      },
+      "parallelContrast": {
+        "prefix": "若你少一点执念、多一点冒险",
+        "targetScriptId": "romantic_gambler",
+        "suffix": "你可能会更自由"
+      }
+    },
+    {
+      "id": "freedom_hunter",
+      "order": 5,
+      "name": "自由猎人",
+      "pairKey": "F_A",
+      "primaryDimension": "F",
+      "secondaryDimension": "A",
+      "tagline": "追逐自由的人，最后都学会了为自己负责",
+      "identity": {
+        "yearLabel": "2031",
+        "roleLabel": "未来人格",
+        "description": [
+          "你不想要被定义的人生。",
+          "所以你一直在换跑道。",
+          "2031年的你，终于找到了自己的节奏。"
+        ]
+      },
+      "dna": {
+        "profileHint": "高自由 + 高行动",
+        "shadowDimension": "R",
+        "growthResistance": "自由感很强，稳定感偏弱",
+        "futureOpportunity": "把「说走就走」升级为「说做就做」"
+      },
+      "timeline": [
+        { "year": 2026, "type": "normal", "label": "试探边界", "event": "拒绝了第一份「稳定但无聊」的offer" },
+        { "year": 2027, "type": "normal", "label": "主动选择", "event": "尝试了一种全新生活方式" },
+        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "发现自由需要结构支撑" },
+        { "year": 2029, "type": "normal", "label": "建立规则", "event": "给自己定了3条「自由的前提」" },
+        { "year": 2030, "type": "turning", "label": "关键决定", "event": "不再逃离，开始建设" },
+        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "自由不再是逃避，而是选择" }
+      ],
+      "report": {
+        "mainQuest": "找到不牺牲自由的成长方式",
+        "maxGrowth": "敢行动，也敢承担",
+        "maxRegret": "有些逃离其实只是拖延",
+        "universeNote": "定位成功。你这次没换地图，换了自己。"
+      },
+      "verdict": {
+        "quote": "你不是不想稳定，是不想被别人的稳定定义。",
+        "lifeTags": ["自由至上", "换过跑道", "终于落地"]
+      },
+      "shareQuotes": [
+        "自由不是逃离一切，是选择什么值得留下。",
+        "我追了五年自由，最后追到了自己。",
+        "2031年的我：终于不用证明我不一样了。"
+      ],
+      "poster": {
+        "defaultQuoteIndex": 0,
+        "footer": "来自2031年的自己 · Future Me"
+      },
+      "parallelContrast": {
+        "prefix": "若你少一点冲动、多一点沉淀",
+        "targetScriptId": "parallel_resident",
+        "suffix": "你可能会更笃定"
+      }
+    },
+    {
+      "id": "parallel_resident",
+      "order": 6,
+      "name": "平行宇宙居民",
+      "pairKey": "F_R",
+      "primaryDimension": "F",
+      "secondaryDimension": "R",
+      "tagline": "活在无数个「如果当初」里，却慢慢接受了这一个",
+      "identity": {
+        "yearLabel": "2031",
+        "roleLabel": "未来人格",
+        "description": [
+          "你的脑子里住着很多个自己。",
+          "每一个都过得不一样。",
+          "2031年的你，终于和这一个和解了。"
+        ]
+      },
+      "dna": {
+        "profileHint": "高自由 + 高遗憾敏感",
+        "shadowDimension": "A",
+        "growthResistance": "选择困难，因为每个选择都意味着放弃",
+        "futureOpportunity": "选定一条路，并允许自己不再回头看"
+      },
+      "timeline": [
+        { "year": 2026, "type": "normal", "label": "多线人生", "event": "同时在脑子里过了4种人生版本" },
+        { "year": 2027, "type": "normal", "label": "反复假设", "event": "「如果当初」出现了无数次" },
+        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "决定不再模拟，开始活一种" },
+        { "year": 2029, "type": "normal", "label": "接受局限", "event": "承认没有「最优解」" },
+        { "year": 2030, "type": "turning", "label": "关键决定", "event": "对平行宇宙里的自己说了再见" },
+        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "终于觉得这一条时间线也不错" }
+      ],
+      "report": {
+        "mainQuest": "停止过别人的生活，开始过自己的",
+        "maxGrowth": "接受「没选的那条路」也会有问题",
+        "maxRegret": "在假设里浪费了太多当下",
+        "universeNote": "平行宇宙接口已关闭。当前时间线：唯一且有效。"
+      },
+      "verdict": {
+        "quote": "你不是选错了，是从不认为自己选对了。",
+        "lifeTags": ["如果当初", "多线人生", "慢慢和解"]
+      },
+      "shareQuotes": [
+        "我以为错过的是机会，其实是勇气。",
+        "平行宇宙里的我都很好，但这个宇宙里的我也不差。",
+        "2031年的我：不再问「如果」，开始说「既然」。"
+      ],
+      "poster": {
+        "defaultQuoteIndex": 1,
+        "footer": "来自2031年的自己 · Future Me"
+      },
+      "parallelContrast": {
+        "prefix": "若你少一点犹豫、多一点笃定",
+        "targetScriptId": "freedom_hunter",
+        "suffix": "你可能会更果敢"
+      }
+    },
+    {
+      "id": "fate_observer",
+      "order": 7,
+      "name": "命运观察员",
+      "pairKey": "M_A_low",
+      "primaryDimension": "M",
+      "secondaryDimension": "A",
+      "matchRule": {
+        "primary": { "dim": "M", "min": 60 },
+        "secondary": { "dim": "A", "max": 40 },
+        "description": "高动能 + 低行动"
+      },
+      "tagline": "看得太远，走得不够快",
+      "identity": {
+        "yearLabel": "2031",
+        "roleLabel": "未来人格",
+        "description": [
+          "你像站在高处观察自己的人生。",
+          "什么都看得清。",
+          "只是迟迟不肯下场。"
+        ]
+      },
+      "dna": {
+        "profileHint": "高动能 + 低行动",
+        "shadowDimension": "A",
+        "growthResistance": "洞察力强，启动按钮难按",
+        "futureOpportunity": "把观察笔记变成第一个行动"
+      },
+      "timeline": [
+        { "year": 2026, "type": "normal", "label": "持续观察", "event": "看懂了身边所有人的路，除了自己的" },
+        { "year": 2027, "type": "normal", "label": "分析过载", "event": "列了利弊清单，却没做选择" },
+        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "有人推了你一把，你才发现没那么可怕" },
+        { "year": 2029, "type": "normal", "label": "小步验证", "event": "开始用「7天实验」代替「完美计划」" },
+        { "year": 2030, "type": "turning", "label": "关键决定", "event": "不再等「想明白」，先「做起来」" },
+        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "终于从看台走下来了" }
+      ],
+      "report": {
+        "mainQuest": "从旁观者变成参与者",
+        "maxGrowth": "发现「做了再说」比「想清再做」有效",
+        "maxRegret": "明明看得清，却迟迟不动",
+        "universeNote": "观察报告已生成。建议：少看一点，多做一点。"
+      },
+      "verdict": {
+        "quote": "你什么都看得清，就是迟迟不肯下场。",
+        "lifeTags": ["旁观者", "分析过载", "终于迈出"]
+      },
+      "shareQuotes": [
+        "我看懂了太多道理，终于开始懂自己。",
+        "最大的转折不是想通了，是迈出了。",
+        "2031年的我：不再旁观我的人生了。"
+      ],
+      "poster": {
+        "defaultQuoteIndex": 1,
+        "footer": "来自2031年的自己 · Future Me"
+      },
+      "parallelContrast": {
+        "prefix": "若你少一点观望、多一点冲动",
+        "targetScriptId": "romantic_gambler",
+        "suffix": "你可能会更精彩"
+      }
+    },
+    {
+      "id": "romantic_gambler",
+      "order": 8,
+      "name": "浪漫赌徒",
+      "pairKey": "A_F",
+      "primaryDimension": "A",
+      "secondaryDimension": "F",
+      "tagline": "敢赌、敢爱、敢重来",
+      "identity": {
+        "yearLabel": "2031",
+        "roleLabel": "未来人格",
+        "description": [
+          "你的人生像一场有分寸的冒险。",
+          "输了会痛，但不赌会更痛。",
+          "2031年的你，学会了计算风险，但没学会胆小。"
+        ]
+      },
+      "dna": {
+        "profileHint": "高行动 + 高自由",
+        "shadowDimension": "R",
+        "growthResistance": "敢开始，偶尔不敢坚持",
+        "futureOpportunity": "把赌的勇气，用在长期主义上"
+      },
+      "timeline": [
+        { "year": 2026, "type": "normal", "label": "大胆尝试", "event": "做了一个所有人都说「太冒险」的决定" },
+        { "year": 2027, "type": "normal", "label": "跌倒爬起", "event": "失败了一次，但没有退场" },
+        { "year": 2028, "type": "turning", "label": "第一次重要转折", "event": "发现冒险需要节奏，不是蛮干" },
+        { "year": 2029, "type": "normal", "label": "精准下注", "event": "开始只赌自己真正相信的事" },
+        { "year": 2030, "type": "turning", "label": "关键决定", "event": "留下一个长期项目，不再全面开花" },
+        { "year": 2031, "type": "milestone", "label": "人生新阶段", "event": "依然敢赌，但不再拿人生当筹码" }
+      ],
+      "report": {
+        "mainQuest": "把冒险变成可持续的人生策略",
+        "maxGrowth": "输了能重来，赢了知道收手",
+        "maxRegret": "有些赌局本可以更早下注",
+        "universeNote": "风险评级：中高。回报评级：值得。已记录。"
+      },
+      "verdict": {
+        "quote": "你怕的不是失败，是从来没为自己赌过一次。",
+        "lifeTags": ["敢赌敢输", "跌倒爬起", "更会下注"]
+      },
+      "shareQuotes": [
+        "我赌的不是成功，是不再后悔。",
+        "自由不是什么都不怕，是怕了也去做。",
+        "2031年的我：还是敢赌，但更会选了。"
+      ],
+      "poster": {
+        "defaultQuoteIndex": 0,
+        "footer": "来自2031年的自己 · Future Me"
+      },
+      "parallelContrast": {
+        "prefix": "若你少一点冒险、多一点耐心",
+        "targetScriptId": "time_collector",
+        "suffix": "你可能会更沉稳"
+      }
+    }
+  ],
+  "scriptLookup": {
+    "C_R": "archaeologist",
+    "R_C": "archaeologist",
+    "C_A": "bookmark_entrepreneur",
+    "A_C": "bookmark_entrepreneur",
+    "M_C": "midnight_planner",
+    "C_M": "midnight_planner",
+    "M_R": "time_collector",
+    "R_M": "time_collector",
+    "F_A": "freedom_hunter",
+    "A_F": "romantic_gambler",
+    "F_R": "parallel_resident",
+    "R_F": "parallel_resident",
+    "M_A_low": "fate_observer"
+  }
+}

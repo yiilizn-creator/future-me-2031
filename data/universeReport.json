@@ -1,0 +1,329 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "description": "宇宙观察报告规则库：按优先级匹配，命中第一条即返回",
+    "matchOrder": "priority DESC，同优先级取 conditionScore 最高"
+  },
+  "rules": [
+    {
+      "id": "idea_hoarder",
+      "priority": 100,
+      "name": "灵感囤积型",
+      "conditions": {
+        "dna": {
+          "C": { "min": 60 },
+          "R": { "min": 55 }
+        },
+        "answerPatterns": {
+          "anyOf": [
+            { "question": "Q5", "answers": ["A", "C"] },
+            { "question": "Q6", "answers": ["A", "B", "C"] }
+          ],
+          "minMatch": 2
+        }
+      },
+      "stats": {
+        "ideas": { "base": 380, "variance": 80, "seed": "C" },
+        "executed": { "base": 28, "variance": 15, "seed": "A" },
+        "completed": { "base": 7, "variance": 5, "seed": "A" }
+      },
+      "text": "该用户累计产生{{ideas}}个改变人生的想法，执行{{executed}}个，完成{{completed}}个。相比2026年，已获得明显进步。",
+      "subtext": "宇宙备注：你不是没想法，是想法太多，手太少。",
+      "tone": "扎心但温柔"
+    },
+    {
+      "id": "tomorrow_starter",
+      "priority": 95,
+      "name": "明天开始型",
+      "conditions": {
+        "dna": {
+          "R": { "min": 60 },
+          "A": { "max": 45 }
+        },
+        "answerPatterns": {
+          "anyOf": [
+            { "question": "Q6", "answers": ["A"] },
+            { "question": "Q12", "answers": ["A"] }
+          ],
+          "minMatch": 1
+        }
+      },
+      "stats": {
+        "delayedDays": { "base": 1240, "variance": 200, "seed": "R" },
+        "started": { "base": 12, "variance": 8, "seed": "A" }
+      },
+      "text": "宇宙后台记录：你并不缺天赋，只是习惯把开始日期设置成明天。",
+      "subtext": "检测到「明天」出现频率：{{delayedDays}}次/五年。真正开始：{{started}}次。",
+      "tone": "毒舌精准"
+    },
+    {
+      "id": "too_many_directions",
+      "priority": 90,
+      "name": "方向过载型",
+      "conditions": {
+        "dna": {
+          "C": { "min": 58 },
+          "M": { "min": 55 }
+        },
+        "answerPatterns": {
+          "anyOf": [
+            { "question": "Q5", "answers": ["A"] },
+            { "question": "Q9", "answers": ["C"] }
+          ],
+          "minMatch": 1
+        }
+      },
+      "stats": {
+        "directions": { "base": 14, "variance": 6, "seed": "C" },
+        "committed": { "base": 2, "variance": 2, "seed": "A" }
+      },
+      "text": "检测结果：你最大的问题不是没方向，是方向太多。",
+      "subtext": "当前并行人生版本：{{directions}}条。真正投入的：{{committed}}条。",
+      "tone": "一针见血"
+    },
+    {
+      "id": "observer_mode",
+      "priority": 88,
+      "name": "旁观模式型",
+      "conditions": {
+        "dna": {
+          "M": { "min": 60 },
+          "A": { "max": 40 }
+        },
+        "scriptIds": ["fate_observer", "midnight_planner"]
+      },
+      "stats": {
+        "insights": { "base": 180, "variance": 40, "seed": "M" },
+        "actions": { "base": 16, "variance": 10, "seed": "A" },
+        "ratio": { "formula": "actions / insights", "format": "percent" }
+      },
+      "text": "宇宙检测：你的分析能力远超行动能力，差距正在缩小。",
+      "subtext": "洞察产出{{insights}}条，行动产出{{actions}}次。转化率：{{ratio}}。",
+      "tone": "理性吐槽"
+    },
+    {
+      "id": "parallel_thinking",
+      "priority": 85,
+      "name": "平行假设型",
+      "conditions": {
+        "dna": {
+          "F": { "min": 58 },
+          "R": { "min": 58 }
+        },
+        "answerPatterns": {
+          "anyOf": [
+            { "question": "Q11", "answers": ["A", "B", "C", "D"] },
+            { "question": "Q10", "answers": ["C", "D"] }
+          ],
+          "minMatch": 2
+        },
+        "scriptIds": ["parallel_resident"]
+      },
+      "stats": {
+        "whatIfs": { "base": 760, "variance": 150, "seed": "R" },
+        "decisions": { "base": 9, "variance": 5, "seed": "A" },
+        "peaceMoments": { "base": 2, "variance": 3, "seed": "F" }
+      },
+      "text": "检测：你最大的问题不是选错，是从不认为自己选对了。",
+      "subtext": "「如果当初」模拟{{whatIfs}}次，真正决策{{decisions}}次，和解时刻{{peaceMoments}}次。",
+      "tone": "哲学扎心"
+    },
+    {
+      "id": "freedom_seeker",
+      "priority": 82,
+      "name": "自由追寻型",
+      "conditions": {
+        "dna": {
+          "F": { "min": 65 },
+          "topDimension": "F"
+        },
+        "answerPatterns": {
+          "anyOf": [
+            { "question": "Q8", "answers": ["D"] },
+            { "question": "Q9", "answers": ["B"] },
+            { "question": "Q2", "answers": ["D"] }
+          ],
+          "minMatch": 1
+        }
+      },
+      "stats": {
+        "pathsTried": { "base": 5, "variance": 3, "seed": "F" },
+        "committed": { "base": 2, "variance": 1, "seed": "A" },
+        "escaped": { "formula": "pathsTried - committed" }
+      },
+      "text": "宇宙后台：你不是不想稳定，是不想被别人的稳定定义。",
+      "subtext": "尝试过{{pathsTried}}条路，真正留下{{committed}}条。其余{{escaped}}条，标注为「探索」。",
+      "tone": "理解式幽默"
+    },
+    {
+      "id": "action_reward",
+      "priority": 80,
+      "name": "行动回报型",
+      "conditions": {
+        "dna": {
+          "A": { "min": 62 },
+          "topDimension": "A"
+        },
+        "answerPatterns": {
+          "anyOf": [
+            { "question": "Q2", "answers": ["A"] },
+            { "question": "Q7", "answers": ["A", "D"] },
+            { "question": "Q12", "answers": ["A"] }
+          ],
+          "minMatch": 2
+        },
+        "scriptIds": ["bookmark_entrepreneur", "romantic_gambler", "freedom_hunter"]
+      },
+      "stats": {
+        "ideas": { "base": 120, "variance": 40, "seed": "C" },
+        "executed": { "base": 72, "variance": 20, "seed": "A" },
+        "completed": { "base": 35, "variance": 12, "seed": "A" }
+      },
+      "text": "宇宙后台记录：你并不缺天赋，只是曾经习惯把开始日期设置成明天。现在改了。",
+      "subtext": "五年执行率：{{executed}}/{{ideas}}。完成率：{{completed}}/{{executed}}。评级：罕见的高行动个体。",
+      "tone": "正向认可"
+    },
+    {
+      "id": "gambler_arc",
+      "priority": 78,
+      "name": "浪漫赌局型",
+      "conditions": {
+        "dna": {
+          "A": { "min": 58 },
+          "F": { "min": 58 }
+        },
+        "answerPatterns": {
+          "anyOf": [
+            { "question": "Q2", "answers": ["A"] },
+            { "question": "Q8", "answers": ["A", "C"] },
+            { "question": "Q10", "answers": ["B"] }
+          ],
+          "minMatch": 2
+        },
+        "scriptIds": ["romantic_gambler"]
+      },
+      "stats": {
+        "bets": { "base": 28, "variance": 10, "seed": "A" },
+        "wins": { "base": 9, "variance": 5, "seed": "A" },
+        "lessons": { "formula": "bets - wins" }
+      },
+      "text": "宇宙备注：你不是运气差，是下注太散。现在开始集中了。",
+      "subtext": "累计下注{{bets}}次，赢{{wins}}次，学费{{lessons}}次。ROI：正在回升。",
+      "tone": "冒险者口吻"
+    },
+    {
+      "id": "time_anxiety",
+      "priority": 75,
+      "name": "时间焦虑型",
+      "conditions": {
+        "dna": {
+          "M": { "min": 58 },
+          "R": { "min": 58 }
+        },
+        "answerPatterns": {
+          "anyOf": [
+            { "question": "Q1", "answers": ["B"] },
+            { "question": "Q7", "answers": ["B", "C"] }
+          ],
+          "minMatch": 1
+        },
+        "scriptIds": ["time_collector"]
+      },
+      "stats": {
+        "delayed": { "base": 280, "variance": 60, "seed": "R" },
+        "started": { "base": 22, "variance": 10, "seed": "A" },
+        "regretMoments": { "base": 38, "variance": 12, "seed": "R" }
+      },
+      "text": "宇宙备注：你不是没时间，是太怕选错时间。",
+      "subtext": "拖延记录{{delayed}}条，启动记录{{started}}次，遗憾回放{{regretMoments}}次。",
+      "tone": "温柔戳破"
+    },
+    {
+      "id": "perfectionist_trap",
+      "priority": 72,
+      "name": "完美主义陷阱型",
+      "conditions": {
+        "dna": {
+          "C": { "min": 55 },
+          "R": { "min": 55 }
+        },
+        "answerPatterns": {
+          "anyOf": [
+            { "question": "Q6", "answers": ["B"] },
+            { "question": "Q4", "answers": ["B"] }
+          ],
+          "minMatch": 1
+        }
+      },
+      "stats": {
+        "drafts": { "base": 56, "variance": 20, "seed": "C" },
+        "published": { "base": 4, "variance": 3, "seed": "A" },
+        "perfectRounds": { "base": 23, "variance": 8, "seed": "R" }
+      },
+      "text": "检测：你的作品不是不够好，是「还没准备好」太久了。",
+      "subtext": "草稿{{drafts}}份，发布{{published}}份，反复打磨{{perfectRounds}}轮。",
+      "tone": "创作者共鸣"
+    },
+    {
+      "id": "restart_master",
+      "priority": 70,
+      "name": "重启韧性型",
+      "conditions": {
+        "dna": {
+          "M": { "min": 55 },
+          "A": { "min": 50 }
+        },
+        "answerPatterns": {
+          "anyOf": [
+            { "question": "Q5", "answers": ["D"] },
+            { "question": "Q7", "answers": ["D"] }
+          ],
+          "minMatch": 2
+        }
+      },
+      "stats": {
+        "restarts": { "base": 11, "variance": 5, "seed": "M" },
+        "quit": { "base": 0, "variance": 1, "seed": "A" },
+        "stillGoing": { "base": 1, "variance": 0, "seed": "M" }
+      },
+      "text": "宇宙备注：你崩溃过，重启过，但从没真正退场。",
+      "subtext": "系统重启{{restarts}}次，彻底放弃{{quit}}次，当前状态：运行中。",
+      "tone": "鼓舞"
+    },
+    {
+      "id": "progress_fallback",
+      "priority": 1,
+      "name": "通用进步兜底",
+      "conditions": {
+        "fallback": true
+      },
+      "stats": {
+        "scans": { "base": 12, "variance": 0, "seed": "M" },
+        "clarity": { "formula": "avg(M,F,A,R,C)", "format": "percent" },
+        "year": { "value": 2031 }
+      },
+      "text": "该用户已完成{{scans}}层命运扫描。未来清晰度{{clarity}}。相比2026年，时间线已发生可测量偏移。",
+      "subtext": "宇宙备注：已读。回复较慢。但你在看这条消息，本身就是进步。",
+      "tone": "兜底温暖"
+    }
+  ],
+  "statEngine": {
+    "description": "动态数字生成：value = base + hash(sessionId + seed) % variance",
+    "hashModulo": "variance",
+    "formulaTypes": {
+      "percent": "round(value * 100) + '%'",
+      "number": "round(value)"
+    }
+  },
+  "matcher": {
+    "description": "匹配流程伪代码",
+    "steps": [
+      "1. 过滤 fallback=false 的规则，按 priority 降序",
+      "2. 逐条检查 dna 条件（min/max/topDimension）",
+      "3. 检查 scriptIds（若存在）是否包含当前剧本",
+      "4. 检查 answerPatterns：anyOf 中命中数 >= minMatch",
+      "5. 计算 conditionScore = 命中条件数，取最高分",
+      "6. 无命中则返回 priority=1 的 progress_fallback"
+    ]
+  }
+}
