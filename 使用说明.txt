@@ -1,0 +1,39 @@
+人生剧透计划 - Future Me 2031
+================================
+
+【在其他电脑上打开】
+
+本项目为静态网页，不能直接双击 index.html（浏览器会拦截数据加载）。
+请用下面任一方式启动本地服务器后，用浏览器访问。
+
+方式一（推荐，Mac / 已装 Python 的电脑）
+  1. 解压本文件夹到任意位置
+  2. 打开终端，进入本文件夹
+  3. 运行：bash start.sh
+     或：python3 -m http.server 8080
+  4. 浏览器打开：http://localhost:8080
+
+方式二（Windows）
+  1. 解压本文件夹
+  2. 在本文件夹地址栏输入 cmd 回车，打开命令行
+  3. 若已安装 Python：python -m http.server 8080
+  4. 浏览器打开：http://localhost:8080
+
+方式三（VS Code）
+  1. 用 VS Code 打开本文件夹
+  2. 安装 Live Server 插件
+  3. 右键 index.html → Open with Live Server
+
+【文件夹说明】
+  index.html    入口页面
+  css/          样式
+  js/           程序逻辑（直接运行用此目录）
+  data/         题库与剧本数据
+  start.sh      一键启动脚本（Mac/Linux）
+  share-card.png 分享用图片
+
+【在线版】
+  https://yiilizn-creator.github.io/future-me-2031/
+
+【重置答题记录】
+  访问时在网址后加：?reset=1
