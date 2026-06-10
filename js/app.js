@@ -51,7 +51,6 @@ const state = {
   selectedKey: null,
   undoTimer: null,
   introLineIndex: 0,
-  introLines: null,
   futureLeakSeen: false,
   futureLeak: null,
   leakLineIndex: -1,
@@ -69,7 +68,6 @@ let getDimLabel = (d) => d;
 let createSessionId = () => '';
 let computeResult = () => null;
 let computeFutureLeak = () => null;
-let pseudoIntroStats = () => ({});
 
 async function bootstrap() {
   if (new URLSearchParams(location.search).has('reset')) {
@@ -89,7 +87,6 @@ async function bootstrap() {
   createSessionId = engine.createSessionId;
   computeResult = engine.computeResult;
   computeFutureLeak = engine.computeFutureLeak;
-  pseudoIntroStats = engine.pseudoIntroStats;
 
   state.sessionId = createSessionId();
   loadSession();
@@ -565,17 +562,6 @@ function renderDnaBars(dna) {
   }).join('');
 }
 
-function getIntroLines() {
-  const stats = pseudoIntroStats(state.sessionId);
-  return [
-    '正在打开未来档案...',
-    '正在观察人生惯性...',
-    `记录：${stats.hesitations} 次犹豫`,
-    `${stats.abandoned} 个未完成的选择`,
-    `${stats.unsent} 段没说出口的话`,
-  ];
-}
-
 function renderFutureSignalTitle(text, extraClass = '') {
   const safe = escapeHtml(text);
   const className = ['future-signal-title', extraClass].filter(Boolean).join(' ');
@@ -603,16 +589,16 @@ function runFutureSignalGlitch() {
 function renderIntro() {
   return `
     <div class="screen intro-screen" data-screen="intro">
-      <p class="intro-brand">${BRAND.name}</p>
+      <p class="intro-brand intro-reveal">${BRAND.name}</p>
       <h1 class="intro-hero">
-        ${BRAND.hero.map((line) => `<span class="intro-hero-line">${escapeHtml(line)}</span>`).join('')}
+        ${BRAND.hero.map((line) => `<span class="intro-hero-line intro-reveal">${escapeHtml(line)}</span>`).join('')}
       </h1>
-      <p class="intro-sub">${escapeHtml(BRAND.sub)}</p>
+      <p class="intro-sub intro-reveal">${escapeHtml(BRAND.sub)}</p>
       <p class="intro-desc">
-        ${BRAND.description.map((line) => `<span class="intro-desc-line">${escapeHtml(line)}</span>`).join('')}
+        ${BRAND.description.map((line) => `<span class="intro-desc-line intro-reveal">${escapeHtml(line)}</span>`).join('')}
       </p>
-      <div class="intro-actions">
-        <button class="btn btn-primary btn-block" id="btn-start" type="button">${BRAND.ctaStart}</button>
+      <div class="intro-actions intro-reveal">
+        <button class="btn btn-primary btn-block" id="btn-start" type="button" disabled>${BRAND.ctaStart}</button>
       </div>
     </div>
   `;
@@ -852,6 +838,8 @@ function render() {
     }
   } else if (state.screen === 'result-identity') {
     runFutureSignalGlitch();
+  } else if (state.screen === 'intro') {
+    runIntroAnimation();
   }
 }
 
@@ -1169,32 +1157,34 @@ function syncIntroDom() {
   const introScreen = document.querySelector('[data-screen="intro"]');
   if (!introScreen) return;
 
-  const lineCount = state.introLines?.length ?? 0;
-  introScreen.querySelectorAll('.intro-line').forEach((el, i) => {
+  const reveals = introScreen.querySelectorAll('.intro-reveal');
+  reveals.forEach((el, i) => {
     el.classList.toggle('visible', i <= state.introLineIndex);
   });
 
-  const ready = introScreen.querySelector('.intro-ready');
-  if (ready) ready.classList.toggle('visible', state.introLineIndex >= lineCount);
-
   const btn = document.getElementById('btn-start');
-  if (btn) btn.disabled = state.introLineIndex < lineCount;
+  if (btn) btn.disabled = state.introLineIndex < reveals.length - 1;
 }
 
 function runIntroAnimation() {
-  state.introLines = getIntroLines();
   stopIntroAnimation();
-  state.introLineIndex = 0;
+  state.introLineIndex = -1;
   syncIntroDom();
 
-  introTimer = setInterval(() => {
-    if (state.introLineIndex < state.introLines.length) {
+  const tick = () => {
+    const reveals = document.querySelectorAll('[data-screen="intro"] .intro-reveal');
+    if (state.introLineIndex < reveals.length - 1) {
       state.introLineIndex++;
       syncIntroDom();
     } else {
       stopIntroAnimation();
     }
-  }, 700);
+  };
+
+  setTimeout(() => {
+    tick();
+    introTimer = setInterval(tick, 900);
+  }, 600);
 }
 
 function bindEvents() {
@@ -1268,7 +1258,6 @@ function bindEvents() {
     state.shared = false;
     state.selectedKey = null;
     state.introLineIndex = 0;
-    state.introLines = null;
     state.futureLeakSeen = false;
     state.futureLeak = null;
     state.leakLineIndex = -1;

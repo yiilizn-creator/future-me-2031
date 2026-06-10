@@ -85,8 +85,23 @@ body {
 button,
 input,
 textarea,
-select {
+select,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong,
+b,
+em,
+i,
+p,
+span,
+a,
+label {
   font-family: var(--font-pixel) !important;
+  font-weight: normal;
   -webkit-font-smoothing: none;
   font-smooth: never;
 }
@@ -201,6 +216,7 @@ body {
   gap: 0;
   padding-left: 20px;
   padding-right: 20px;
+  animation: none;
 }
 
 .intro-brand,
@@ -230,6 +246,8 @@ body {
   color: var(--text);
   margin-bottom: 18px;
   letter-spacing: 0.04em;
+  font-weight: normal;
+  font-family: var(--font-pixel) !important;
 }
 
 .intro-hero-line {
@@ -254,6 +272,38 @@ body {
 
 .intro-desc-line {
   display: block;
+}
+
+.intro-reveal {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  filter: blur(3px);
+  transition:
+    opacity 1.4s ease,
+    transform 1.2s ease,
+    filter 1.6s ease,
+    visibility 0s linear 1.4s;
+}
+
+.intro-reveal.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  filter: blur(0);
+  transition:
+    opacity 1.6s ease,
+    transform 1.4s ease,
+    filter 1.8s ease,
+    visibility 0s linear 0s;
+}
+
+.intro-actions.intro-reveal {
+  transform: translateY(12px);
+}
+
+.intro-actions.intro-reveal.visible {
+  transform: translateY(0);
 }
 
 .intro-title {
