@@ -278,15 +278,17 @@
         ],
         "portrait": [
           "2031年的你，",
-          "没有成为最厉害的人。",
-          "却成为了最舒服的人。",
+          "依然是别人眼中厉害的人。",
+          "也终于成为了自己相信的人。",
           "你依然会想很多。",
           "依然会犹豫。",
-          "但你终于学会把一些事情做完。",
-          "而不是一直准备。",
-          "真正改变人生的，",
-          "从来不是完美计划。",
-          "而是开始。"
+          "依然偶尔怀疑自己。",
+          "但和五年前不同的是，",
+          "这些声音已经无法阻止你前进。",
+          "你终于明白：",
+          "人生不是等准备好了再开始。",
+          "而是开始以后，",
+          "才慢慢准备好。"
         ],
         "reminder": "未来最大的变化，不是你变厉害了。而是终于开始。"
       },
@@ -821,10 +823,18 @@
     "C_M": "midnight_planner",
     "M_R": "time_collector",
     "R_M": "time_collector",
+    "M_A": "midnight_planner",
+    "A_M": "midnight_planner",
     "F_A": "freedom_hunter",
     "A_F": "romantic_gambler",
     "F_R": "parallel_resident",
     "R_F": "parallel_resident",
+    "A_R": "archaeologist",
+    "R_A": "archaeologist",
+    "F_C": "parallel_resident",
+    "C_F": "bookmark_entrepreneur",
+    "M_F": "fate_observer",
+    "F_M": "parallel_resident",
     "M_A_low": "fate_observer"
   }
 }

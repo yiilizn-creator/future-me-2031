@@ -137,7 +137,8 @@ export function resolveScriptId(
   const p = rank1 ?? sorted[0][0];
   const s = rank2 ?? sorted[1][0];
 
-  if (p === 'M' && dna.A < 40) {
+  const topPair = new Set([sorted[0][0], sorted[1][0]]);
+  if (topPair.has('M') && topPair.has('A') && dna.A < 40) {
     return 'fate_observer';
   }
 
@@ -149,7 +150,8 @@ export function resolveScriptId(
   if (scriptFallback[key1]) return scriptFallback[key1];
   if (scriptFallback[key2]) return scriptFallback[key2];
 
-  return scripts[0].id;
+  const byPrimary = scripts.find((script) => script.primaryDimension === p);
+  return byPrimary?.id ?? scripts[0].id;
 }
 
 function matchDnaCondition(

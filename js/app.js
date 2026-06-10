@@ -47,6 +47,7 @@ const state = {
   questionIndex: 0,
   answers: {},
   result: null,
+  resultSignature: '',
   shared: false,
   selectedKey: null,
   undoTimer: null,
@@ -228,17 +229,15 @@ function renderSharePoetryHtml(result) {
 
 function buildShareText() {
   return [
-    '未来其实没有那么神秘。',
+    '你的人生，',
     '',
-    '很多答案。',
+    '其实有剧透。',
     '',
-    '早就藏在今天的选择里。',
+    '我刚刚提前看了一眼2031年的自己。',
     '',
-    '刚玩了一个叫人生剧透计划的网站。',
+    '有点意外。',
     '',
-    '它给我生成了一份2031人生剧透。',
-    '',
-    '意外地准。',
+    '因为它说中了我一直没发现的事情。',
     '',
     getShareLink(),
   ].join('\n');
@@ -264,7 +263,7 @@ function buildSharePayload() {
   const text = buildShareText();
   return {
     title: '人生剧透计划 - Future Me 2031',
-    desc: '未来其实没有那么神秘。很多答案，早就藏在今天的选择里。',
+    desc: '你的人生，其实有剧透。我刚刚提前看了一眼2031年的自己。',
     link: getShareLink(),
     imgUrl: getShareImageUrl(),
     text,
@@ -496,6 +495,7 @@ function loadSession() {
 
     if (answerCount === TOTAL_QUESTIONS) {
       state.result = computeResult(state.answers, state.sessionId);
+      state.resultSignature = JSON.stringify(state.answers);
       if (data.screen && data.screen !== 'intro') {
         state.screen = LEGACY_RESULT_SCREENS.includes(data.screen)
           ? 'result-share'
@@ -768,7 +768,11 @@ function renderResultShare() {
 
 function ensureResult() {
   if (Object.keys(state.answers).length < TOTAL_QUESTIONS) return false;
-  state.result = computeResult(state.answers, state.sessionId);
+  const signature = JSON.stringify(state.answers);
+  if (!state.result || state.resultSignature !== signature) {
+    state.result = computeResult(state.answers, state.sessionId);
+    state.resultSignature = signature;
+  }
   return Boolean(state.result);
 }
 
@@ -849,6 +853,7 @@ function selectAnswer(key) {
   if (!q || state.answers[q.id] === key) return;
 
   state.answers[q.id] = key;
+  state.result = null;
   clearTimeout(state.undoTimer);
   state.undoTimer = null;
   state.selectedKey = null;
@@ -884,6 +889,7 @@ function finishQuiz() {
 
   quizSubmitting = true;
   state.result = computeResult(state.answers, state.sessionId);
+  state.resultSignature = JSON.stringify(state.answers);
   setScreen('dna');
   setTimeout(() => setScreen('result-identity'), 1800);
 }
@@ -1196,6 +1202,7 @@ function bindEvents() {
     state.questionIndex = 0;
     state.answers = {};
     state.result = null;
+    state.resultSignature = '';
     state.shared = false;
     state.selectedKey = null;
     state.futureLeakSeen = false;
@@ -1215,6 +1222,8 @@ function bindEvents() {
       state.questionIndex--;
       const prevQ = QUESTIONS[state.questionIndex];
       delete state.answers[prevQ.id];
+      state.result = null;
+      state.resultSignature = '';
       saveSession();
     }
     refreshQuizScreen();
@@ -1255,6 +1264,7 @@ function bindEvents() {
     state.questionIndex = 0;
     state.answers = {};
     state.result = null;
+    state.resultSignature = '';
     state.shared = false;
     state.selectedKey = null;
     state.introLineIndex = 0;

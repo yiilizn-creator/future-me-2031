@@ -68,12 +68,12 @@ export const QUESTIONS = [
   {
     id: 'Q7',
     section: '命运漏洞检测',
-    text: '人生最难的一步是？',
+    text: '你觉得人生最难的一步是？',
     options: [
-      { key: 'A', text: '开始' },
-      { key: 'B', text: '坚持' },
-      { key: 'C', text: '放弃' },
-      { key: 'D', text: '重新开始' },
+      { key: 'A', text: '迈出第一步' },
+      { key: 'B', text: '走到最后一步' },
+      { key: 'C', text: '接受走错路' },
+      { key: 'D', text: '跌倒后再往前一步' },
     ],
   },
   {
