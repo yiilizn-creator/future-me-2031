@@ -214,8 +214,7 @@ body {
   align-items: center;
   text-align: center;
   gap: 0;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: max(56px, var(--safe-top)) 24px max(56px, var(--safe-bottom));
   animation: none;
 }
 
@@ -233,18 +232,18 @@ body {
 
 .intro-brand {
   font-size: 10px;
-  line-height: 1.7;
+  line-height: 1.8;
   letter-spacing: 0.06em;
   color: var(--highlight);
-  margin-bottom: 28px;
+  margin-bottom: 36px;
   max-width: 320px;
 }
 
 .intro-hero {
   font-size: clamp(22px, 6.4vw, 34px);
-  line-height: 1.65;
+  line-height: 1.75;
   color: var(--text);
-  margin-bottom: 18px;
+  margin-bottom: 28px;
   letter-spacing: 0.04em;
   font-weight: normal;
   font-family: var(--font-pixel) !important;
@@ -254,24 +253,32 @@ body {
   display: block;
 }
 
+.intro-hero-line + .intro-hero-line {
+  margin-top: 12px;
+}
+
 .intro-sub {
   font-size: clamp(13px, 3.8vw, 17px);
-  line-height: 1.7;
+  line-height: 1.8;
   color: var(--text-body);
-  margin-bottom: 28px;
+  margin-bottom: 36px;
   letter-spacing: 0.04em;
 }
 
 .intro-desc {
   font-size: clamp(11px, 3.2vw, 14px);
-  line-height: 1.85;
+  line-height: 1.9;
   color: var(--text-muted);
-  margin-bottom: 36px;
+  margin-bottom: 48px;
   letter-spacing: 0.03em;
 }
 
 .intro-desc-line {
   display: block;
+}
+
+.intro-desc-line + .intro-desc-line {
+  margin-top: 10px;
 }
 
 .intro-reveal {
@@ -370,7 +377,8 @@ body {
 }
 
 .intro-actions {
-  margin-top: 8px;
+  margin-top: 16px;
+  padding-top: 8px;
   width: 100%;
   max-width: 280px;
 }
@@ -446,7 +454,6 @@ body {
 
 .btn-block {
   width: 100%;
-  margin-top: auto;
 }
 
 .btn-sm {
@@ -465,9 +472,20 @@ body {
 }
 
 .screen-share .share-actions {
-  gap: 8px;
-  margin-top: 14px;
+  gap: 10px;
+  margin-top: 0;
   padding-top: 0;
+  flex-shrink: 0;
+}
+
+.screen-identity > .btn-primary.btn-block {
+  margin-top: auto;
+  flex-shrink: 0;
+  margin-bottom: max(4px, var(--safe-bottom));
+  min-height: 42px;
+  padding: 10px 18px;
+  font-size: 11px;
+  border-radius: 12px;
 }
 
 .screen-share .share-actions .btn-block {
@@ -503,17 +521,16 @@ body {
   gap: 8px;
 }
 
-.screen-identity > .btn-primary.btn-block {
-  margin-top: 0;
-  min-height: 42px;
-  padding: 10px 18px;
-  font-size: 11px;
-  border-radius: 12px;
-}
-
 .screen-share {
   padding-bottom: max(16px, var(--safe-bottom));
   justify-content: flex-start;
+  overflow: hidden;
+}
+
+.screen-identity {
+  justify-content: flex-start;
+  overflow: hidden;
+  gap: 0;
 }
 
 .screen-share,
@@ -528,7 +545,9 @@ body {
   flex: 1;
   width: 100%;
   min-height: 0;
+  min-width: 0;
   justify-content: flex-start;
+  overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -539,6 +558,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 20px;
+  min-width: 0;
 }
 
 /* Quiz */
@@ -744,9 +765,50 @@ body {
 
 /* Verdict · 人生判词（2屏） */
 .screen-verdict {
-  justify-content: space-between;
+  justify-content: flex-start;
   text-align: center;
   padding-bottom: max(20px, var(--safe-bottom));
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+.screen-verdict .result-nav,
+.screen-verdict .result-nav-min {
+  flex-shrink: 0;
+}
+
+.screen-identity .verdict-body {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  justify-content: flex-start;
+  padding: 8px 0 20px;
+  gap: 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.screen-identity .brand-eyebrow {
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.screen-identity .future-signal-title {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.screen-identity .dna-bars {
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.screen-identity .verdict-system {
+  flex-shrink: 0;
+  margin-top: 4px;
+  padding-bottom: 4px;
 }
 
 .verdict-body {
@@ -758,20 +820,23 @@ body {
   width: 100%;
   gap: 28px;
   padding: 12px 0 24px;
+  min-width: 0;
 }
 
 .verdict-body-share {
-  gap: 16px;
+  gap: 20px;
   flex: 1;
+  min-height: 0;
   justify-content: flex-start;
   padding: 4px 0 12px;
+  overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 .screen-share .verdict-body-share {
-  gap: 0;
-  padding-bottom: max(8px, var(--safe-bottom));
+  gap: 20px;
+  padding-bottom: max(12px, var(--safe-bottom));
 }
 
 .verdict-from {
@@ -883,10 +948,6 @@ body {
   margin: 0 0 12px;
 }
 
-.screen-share .brand-eyebrow {
-  color: var(--text);
-}
-
 .section-label {
   font-size: 11px;
   color: var(--text-muted);
@@ -901,11 +962,13 @@ body {
   max-width: 100%;
   font-family: var(--font-pixel);
   font-size: clamp(22px, 6.4vw, 32px);
-  line-height: 1.45;
+  line-height: 1.55;
   color: var(--text);
   text-align: center;
   margin: 0 0 24px;
   letter-spacing: 0.04em;
+  flex-shrink: 0;
+  word-break: break-word;
 }
 
 .future-signal-title--sm {
@@ -1002,6 +1065,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 20px;
+  min-width: 0;
 }
 
 .screen-share .share-header {
@@ -1020,9 +1085,16 @@ body {
   margin-bottom: 20px;
 }
 
+.screen-share .brand-eyebrow {
+  color: var(--text);
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
 .share-portrait-section {
   width: 100%;
-  margin-bottom: 8px;
+  margin-bottom: 0;
+  flex-shrink: 0;
 }
 
 .share-poetry {
@@ -1030,35 +1102,35 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 4px 8px 8px;
+  gap: 12px;
+  padding: 4px 8px 4px;
   text-align: center;
 }
 
 .share-poetry-line {
   font-size: clamp(12px, 3.6vw, 16px);
-  line-height: 1.65;
+  line-height: 1.7;
   color: var(--text-body);
   margin: 0;
   letter-spacing: 0.06em;
   max-width: 100%;
   opacity: 0;
   visibility: hidden;
-  height: 0;
+  max-height: 0;
   overflow: hidden;
-  transition: opacity 0.3s steps(3);
+  transition: opacity 0.3s steps(3), max-height 0.35s ease;
 }
 
 .share-poetry-line.visible {
   opacity: 1;
   visibility: visible;
-  height: auto;
+  max-height: 12em;
   margin: 0;
 }
 
 .screen-share .share-reminder-block {
   width: 100%;
-  padding: 16px 12px;
+  padding: 0 12px;
   border-radius: 12px;
   background: rgba(18, 18, 32, 0.42);
   border: 1px solid var(--glass-border);
@@ -1067,28 +1139,29 @@ body {
   visibility: hidden;
   max-height: 0;
   overflow: hidden;
-  padding-top: 0;
-  padding-bottom: 0;
-  transition: opacity 0.35s steps(3), max-height 0.35s ease;
+  margin-top: 0;
+  flex-shrink: 0;
+  transition: opacity 0.35s steps(3), max-height 0.4s ease, padding 0.35s ease;
 }
 
 .screen-share .share-reminder-block.visible {
   opacity: 1;
   visibility: visible;
-  max-height: 320px;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  max-height: none;
+  overflow: visible;
+  padding-top: 18px;
+  padding-bottom: 18px;
 }
 
 .screen-share .share-reminder-label {
   font-size: 10px;
   color: var(--highlight);
   letter-spacing: 0.12em;
-  margin: 0 0 12px;
+  margin: 0 0 14px;
 }
 
 .share-poetry--reminder {
-  gap: 8px;
+  gap: 10px;
   padding: 0;
 }
 
@@ -1106,7 +1179,10 @@ body {
   align-items: center;
   gap: 10px;
   width: 100%;
+  margin-top: 0;
   margin-bottom: 0;
+  padding-top: 4px;
+  flex-shrink: 0;
   opacity: 0;
   visibility: hidden;
   transform: translateY(6px);
@@ -1124,7 +1200,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 13px;
-  line-height: 1.4;
+  line-height: 1.5;
   color: var(--highlight);
   letter-spacing: 0.02em;
   margin: 0;
@@ -1132,7 +1208,10 @@ body {
   border: 1px solid rgba(167, 139, 250, 0.35);
   border-radius: 999px;
   background: rgba(139, 92, 246, 0.08);
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
+  max-width: 100%;
+  word-break: break-word;
   font-family: var(--font-pixel) !important;
 }
 
@@ -1142,7 +1221,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding-top: 4px;
 }
 
 /* Future Leak 彩蛋 · AI 提示 */
@@ -1879,6 +1959,53 @@ body {
 
 .actions-row .btn {
   flex: 1;
+}
+
+@media (max-height: 680px) {
+  .intro-screen {
+    padding-top: max(32px, var(--safe-top));
+    padding-bottom: max(32px, var(--safe-bottom));
+  }
+
+  .intro-brand {
+    margin-bottom: 24px;
+  }
+
+  .intro-hero {
+    margin-bottom: 20px;
+  }
+
+  .intro-sub {
+    margin-bottom: 24px;
+  }
+
+  .intro-desc {
+    margin-bottom: 32px;
+  }
+
+  .screen-identity .verdict-body {
+    gap: 18px;
+    padding-bottom: 12px;
+  }
+
+  .screen-identity .future-signal-title {
+    font-size: clamp(18px, 5vw, 26px);
+    line-height: 1.5;
+  }
+
+  .dna-bars {
+    padding: 16px 14px;
+    gap: 12px;
+  }
+
+  .screen-share .verdict-body-share,
+  .share-capture-root {
+    gap: 16px;
+  }
+
+  .result-nav-min {
+    padding-bottom: 6px;
+  }
 }
 
 @media (max-width: 390px) {
