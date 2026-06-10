@@ -434,13 +434,11 @@ async function shareToFriend() {
 
   try {
     await navigator.clipboard.writeText(payload.text);
-  } catch {
-    showToast('复制失败，请手动复制');
-    showShareCopySheet(payload.text);
+    showToast('分享文案已复制，粘贴发给朋友吧');
     return;
+  } catch {
+    showShareCopySheet(payload.text);
   }
-
-  showShareCopySheet(payload.text);
 }
 
 function getFirstUnansweredIndex() {
